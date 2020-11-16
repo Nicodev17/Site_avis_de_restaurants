@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vicino Resto - Avis de restaurants près de chez vous</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSy-D9qb4dfopotiCj_oUZjf_X8YXYn9Q" type="text/javascript"></script>
+    <link rel="icon" type="image/png" href="media/faveicon_burger.png"/>
+</head>
+
+<body>
+
+    <!-- entête du site -->
+    <header>
+        <h1> VICINO RESTO </h1>
+        <h2> AVIS DE RESTAURANTS PRES DE CHEZ VOUS ! </h2>
+    </header>
+
+    <!-- zone de filtrage -->
+    <div class="zoneFiltrage">
+        <h3> Choisir une note </h3>
+        <div id="filtreNote">
+            <a href="#1" title="Donner 1 étoile">☆</a>
+            <a href="#2" title="Donner 2 étoiles">☆</a>
+            <a href="#3" title="Donner 3 étoiles">☆</a>
+            <a href="#4" title="Donner 4 étoiles">☆</a>
+            <a href="#5" title="Donner 5 étoiles">☆</a>
+        </div>
+    </div>
+
+    <div class="affichage">
+        <div class="zoneMap">
+            <!-- map affichée ici -->
+        </div>
+
+        <div class="zoneAvis">
+            <ul>
+                <li> <h4> Restaurant 1 </h4> </li>
+                <li> <h4> Restaurant 2 </h4></li>
+                <li> <h4> Restaurant 3 </h4> </li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="src/jquery-3.3.1.js"></script>
+    <script src="src/map.js"></script>
+    <script src="src/items.js"></script>
+    <script src="src/interface.js"></script>
+        
+</body>
+
+</html>

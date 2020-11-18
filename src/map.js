@@ -18,9 +18,7 @@ function initMap() {
         // Nous définissons le type de carte (ici carte routière)
         mapTypeId: google.maps.MapTypeId.ROADMAP, 
         // Nous activons les options de contrôle de la carte (plan, satellite...)
-        mapTypeControl: true,
-        // Nous désactivons la roulette de souris
-        //scrollwheel: false, 
+        mapTypeControl: true, 
         mapTypeControlOptions: {
             // Cette option sert à définir comment les options se placent
             style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR 

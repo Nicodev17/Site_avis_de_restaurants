@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vicino Resto - Avis de restaurants près de chez vous</title>
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/jquery-ui.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSy-D9qb4dfopotiCj_oUZjf_X8YXYn9Q" type="text/javascript"></script>
-    <link rel="icon" type="image/png" href="media/favicon_burger.png"/>
+    <link rel="icon" type="image/png" href="media/favicon_pasta.png"/>
+    <script src="src/jquery-3.3.1.js"></script>
+    <script src="src/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -15,21 +18,19 @@
     <!-- entête du site -->
     <header>
         <div id="zoneTitre">
-            <img id="logo" src="media/favicon_burger.png" alt="logo pizza">
+            <img id="logo" src="media/logo_pasta.png" alt="logo pizza">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
+        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS ! 👌</h2>
     </header>
 
     <!-- zone de filtrage -->
     <div class="zoneFiltrage">
-        <h3> Choisissez une note </h3>
-        <div id="note">
-            <a href="#5" id="#note5" title="Restaurants notés 5 étoiles">★</a>
-            <a href="#4" id="#note4" title="Restaurants notés 4 étoiles">★</a>
-            <a href="#3" id="#note3" title="Restaurants notés 3 étoiles">★</a>
-            <a href="#2" id="#note2" title="Restaurants notés 2 étoiles">★</a>
-            <a href="#1" id="#note1" title="Restaurants notés 1 étoile">★</a>
+        <h3> Sélection de la note : </h3>
+        
+        <div id="zoneRange">
+            <input type="text" readonly="readonly" id="note">
+            <div id="slider-range"> </div>
         </div>
     </div>
 
@@ -52,10 +53,11 @@
         </div>
     </div>
     
-    <script src="src/jquery-3.3.1.js"></script>
+    
     <script src="src/map.js"></script>
     <script src="src/items.js"></script>
     <script src="src/interface.js"></script>
+    <script src="ignorer/config.js"></script>
         
 </body>
 

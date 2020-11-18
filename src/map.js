@@ -33,5 +33,6 @@ function initMap() {
 }
 window.onload = function(){
     // Fonction d'initialisation qui s'exécute lorsque le DOM est chargé
-    initMap(); 
+    initMap();
+    console.log('juste un test');
 };

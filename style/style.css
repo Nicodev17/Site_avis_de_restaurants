@@ -96,14 +96,14 @@ h3 {
 
 /* ---- ZONE DES AVIS ---- */
 
-.zoneAvis {
+.zoneListe {
     width: 35%;
     height: 600px;
     border: 5px solid rgb(94, 94, 94);
     overflow-y: scroll;
 }
 
-.zoneAvis li {
+.zoneListe li {
     height: 130px;
     border: 3px solid rgb(151, 151, 151);
     margin-top: 20px;
@@ -114,8 +114,29 @@ h3 {
 
 h4 {
     font-family: Arial, Helvetica, sans-serif;
-    color: rgb(66, 66, 66);
+    color: #be444a;
     font-size: 1em;
     margin-top: 4px;
+    margin-left: 7px;
+}
+
+.restoAdress {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(66, 66, 66);
+    font-size: 0.9em;
+    margin-left: 7px;
+}
+
+.restoNote {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(177, 70, 21);
+    font-size: 0.9em;
+    margin-left: 7px;
+}
+
+.restoComment {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(66, 66, 66);
+    font-size: 0.85em;
     margin-left: 7px;
 }

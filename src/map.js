@@ -50,11 +50,11 @@ class GoogleMap {
                     lng: pos.coords.longitude
                 }
                 //Centrage de la map sur l'user
-                //mapClass.map.center = new google.maps.LatLng(mapClass.userPosition.lat, mapClass.userPosition.lng);
                 this.map.panTo(this.userPosition);
                 // Ajout du marker de l'user
+                    //this.addMarker(this.userPosition.lat, this.userPosition.lng);
                 let userMarker = new google.maps.Marker ({
-                    position: this.map.center,
+                    position: new google.maps.LatLng(this.userPosition.lat, this.userPosition.lng),
                     map: this.map,
                     icon: 'media/person_icon.png'
                 });
@@ -84,7 +84,7 @@ const initMap = async function() {
     let mapClass = new GoogleMap();
     await mapClass.load(zoneMap);
     await mapClass.geoloc();
-
+    
     // Requête pour obtenir tous les resto du fichier JSON
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
@@ -97,7 +97,7 @@ const initMap = async function() {
             for(let i = 0 ; i < restaurants.length ; i++) {
                 let item = restaurants[i];
 
-                // Création d'yn marqueur
+                // Création d'un marqueur
                 mapClass.addMarker(item.lat, item.lon);
 
                 // Création d'un objet contenant les méthodes d'instance

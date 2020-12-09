@@ -1,0 +1,98 @@
+[ 
+    {
+       "restaurantName":"Arlequin",
+       "address":"1 Rue du Cheval Blanc, 86100 Châtellerault",
+       "lat":46.817265, 
+       "lon":0.543129,
+       "ratings":[
+          {
+             "stars":4,
+             "comment":"Un excellent restaurant, j'y reviendrai !"
+          },
+          {
+             "stars":5,
+             "comment":"Tout simplement mon restaurant préféré !"
+          }
+       ]
+    },
+    {
+       "restaurantName":"La petite auberge",
+       "address":"14 Rue du Cognet, 86100 Châtellerault",
+       "lat":46.814977,
+       "lon":0.543740,
+       "ratings":[
+          {
+             "stars":5,
+             "comment":"Un petit restaurant très sympathique et très bon"
+          },
+          {
+             "stars":3,
+             "comment":"J'ai trouvé ça correct, sans plus"
+          }
+       ]
+    },
+    {
+      "restaurantName":"Crêperie Le Kerlouët",
+      "address":"149 Rue Bourbon, 86100 Châtellerault",
+      "lat":46.818817,
+      "lon":0.544039,
+      "ratings":[
+         {
+            "stars":4,
+            "comment":"Pas mal du tout, on retrouve l'esprit breton"
+         },
+         {
+            "stars":2,
+            "comment":"Je n'ai pas aimé la composition des crêpes"
+         }
+      ]
+   },
+   {
+      "restaurantName":"Le Gresko",
+      "address":"23 Place Emile Zola, 86100 Châtellerault",
+      "lat":46.818029,
+      "lon":0.544494,
+      "ratings":[
+         {
+            "stars":1,
+            "comment":"Pas terrible, service beaucoup trop long"
+         },
+         {
+            "stars":3,
+            "comment":"Niveau plats ça va mais c'est vraiment long"
+         }
+      ]
+   },
+   {
+      "restaurantName":"Apicius",
+      "address":"7 Boulevard Sadi Carnot, 86100 Châtellerault",
+      "lat":46.817937,
+      "lon":0.549039,
+      "ratings":[
+         {
+            "stars":2,
+            "comment":"La cuisine n'est pas très soignée malheureusement"
+         },
+         {
+            "stars":4,
+            "comment":"J'ai trouvé les saveurs des plats intéressantes"
+         }
+      ]
+   },
+   {
+      "restaurantName":"Auberge du lac",
+      "address":"53 Avenue Camille Pagé, 86100 Châtellerault",
+      "lat": 46.801527, 
+      "lon": 0.528169,
+      "ratings":[
+         {
+            "stars":5,
+            "comment":"J'adore ce restaurant, toujours très qualitatif"
+         },
+         {
+            "stars":4,
+            "comment":"Simple et efficace"
+         }
+      ]
+   }
+ ]

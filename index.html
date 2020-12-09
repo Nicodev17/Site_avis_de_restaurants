@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="style/jquery-ui.css">
     <script src="src/jquery-3.3.1.js"></script>
     <script src="src/jquery-ui.js"></script>
-    <script src="config.js"></script>
-    <script id="mapSource"> </script>
 </head>
 
 <body>
@@ -27,7 +25,7 @@
 
     <!-- zone de filtrage -->
     <div class="zoneFiltrage">
-        <h3> Sélection de la note : </h3>
+        <h3> Filtrer les restaurants : </h3>
         
         <div id="zoneRange">
             <input type="text" readonly="readonly" id="note">
@@ -36,7 +34,7 @@
     </div>
 
     <div class="affichage">
-        <div class="zoneMap">
+        <div id="zoneMap">
             <!-- map affichée ici -->
         </div>
 
@@ -56,10 +54,13 @@
         </div>
     </div>
     
-    
+    <!-- <script src="config.js"></script> -->
+    <script src="src/vendor.js"></script>
     <script src="src/map.js"></script>
+    <script src="src/application.js"></script>
+    <script src="src/restaurant.js"></script>
     <script src="src/items.json"></script>
-    <script src="src/interface.js"></script>
+    <script src="src/init.js"></script>
 </body>
 
 </html>

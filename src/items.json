@@ -1,4 +1,4 @@
-{ "restaurants":[
+[ 
     {
        "restaurantName":"Arlequin",
        "address":"1 Rue du Cheval Blanc, 86100 Châtellerault",
@@ -78,5 +78,21 @@
             "comment":"J'ai trouvé les saveurs des plats intéressantes"
          }
       ]
+   },
+   {
+      "restaurantName":"Auberge du lac",
+      "address":"53 Avenue Camille Pagé, 86100 Châtellerault",
+      "lat": 46.801527, 
+      "lon": 0.528169,
+      "ratings":[
+         {
+            "stars":5,
+            "comment":"J'adore ce restaurant, toujours très qualitatif"
+         },
+         {
+            "stars":4,
+            "comment":"Simple et efficace"
+         }
+      ]
    }
- ]}
+ ]

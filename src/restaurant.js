@@ -1,6 +1,5 @@
 class Restaurant {
-    constructor(id, name, photo, address, lat, lon, ratings) {
-        this.id = id;
+    constructor(name, photo, address, lat, lon, ratings) {
         this.name = name;
         this.photo = photo;
         this.address = address;

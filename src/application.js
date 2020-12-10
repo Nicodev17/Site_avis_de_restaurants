@@ -28,15 +28,14 @@ async function initResto() {
   await mapClass.load(zoneMap);
   await mapClass.geoloc();
   let currentPopup = null;
-
+  let arrayRestaurants = [];
 
   // Requête pour obtenir tous les resto du fichier JSON
   var request = new XMLHttpRequest();
   request.onreadystatechange = function() {
     if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
         var response = JSON.parse(this.responseText);
-        let restaurants = response;
-        console.table(restaurants);    
+        let restaurants = response;    
     
       // Pour chaque resto
       for(let i=0 ; i < restaurants.length ; i++) {
@@ -58,15 +57,27 @@ async function initResto() {
           );
         });
 
-        $(document).ready(function event() {
-          listItem.click(
-              function() {
-                listItem.css('display', 'block');
-              },
-          );
+        // Pop up fenetre info
+        $('#zoneListe li:eq(' + i + ')').click(function(){
+          // Affichage
+          $('#overlay').css('visibility', 'visible');
+          // Injection des infos
+          $('h3').html(restaurant.name);
+          $('#photoResto').html('<img src="' + restaurant.photo + '"alt="photo du restaurant">');
+          $('#adresseResto p').html('Adresse : ' + restaurant.address);
+          $('#avisResto p:eq(' + i + ')').html(restaurant.getComments());
         });
 
-        // Création de la bulle infoWindow pour le marqueur
+      //   $("#b2").click(function(){
+      //     $("h1").fadeIn(2000);
+      // });
+
+        // Fermeture fenetre info
+        $('#closeBox').click(function(){
+          $('#overlay').css('visibility', 'hidden');
+        });
+      
+        //Création de la bulle infoWindow pour le marqueur
         // const popup = new google.maps.InfoWindow({
         //   content: item.restaurantName,
         //   maxWidth:300,
@@ -78,40 +89,20 @@ async function initResto() {
         //   //popup.open(mapClass.map, marker);
         // });
 
-        // google.maps.event.addListener(marker, "click", function() {
-        //   console.log('test');
-        //   // On ouvre la bulle correspondant à notre marqueur
-        //   popup.open(mapClass.map, marker);
-        //   // On enregistre cette bulle dans la variable currentPopup
-        //   currentPopup = popup;
-        //   // Si une bulle est déjà ouverte
-        //   if (currentPopup != null) {
-        //     // On la ferme
-        //     currentPopup.close();
-        //     // On vide la variable
-        //     currentPopup = null;
-        //   }
-        // });
-        // Nous activons l'écouteur d'évènement "closeclick" sur notre bulle
-        // pour surveiller le clic sur le bouton de fermeture
-        // google.maps.event.addListener(popup, "closeclick", function() {
-        //   // On vide la variable
-        //   currentPopup = null;
-        // });
-
         // Création d'un objet contenant les méthodes d'instance
-        const restaurant = new Restaurant(item.restaurantName, "media/favicon_burger.png", item.address, item.lat, item.lon, item.ratings);
-        console.log(restaurant);
+        const restaurant = new Restaurant(item.restaurantName, item.photo, item.address, item.lat, item.lon, item.ratings);
+        arrayRestaurants.push(restaurant);
         
         // Affichage dans la liste
-        listItem.html('<h4>' + item.restaurantName + '</h4>' 
-        + '<p class="restoAdress">' + item.address + '</p>'
-        + '<p class="restoNote">'  + item.ratings[0].stars + '/5 ★ </p>').css('display', 'block');
+        listItem.html('<h4>' + restaurant.name + '</h4>' 
+        + '<p class="restoAdress">' + restaurant.address + '</p>'
+        + '<p class="restoNote">'  + restaurant.calculAverage() + '/5 ★ </p>').css('display', 'block');
+
       };
-
-
+      console.table(arrayRestaurants);
     }
   }
+
 request.open("GET","src/items.json");
 request.send();
 

@@ -3,7 +3,6 @@ body {
     width: 100%;
     height: auto;
     margin: 0;
-    /* overflow: hidden; A ACTIVER AU MOMENT DU POPUP */
 }
 
 /* ---- BARRE DU HEADER ---- */
@@ -104,6 +103,7 @@ h2 {
     width: 35%;
     height: 600px;
     overflow-y: scroll;
+    border-left: 2px solid rgb(182, 182, 182);
 }
 
 #zoneListe li {
@@ -151,7 +151,7 @@ h4 {
 
 
 #overlay {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
     background-color: rgba(139, 139, 139, 0.562);
@@ -160,21 +160,25 @@ h4 {
     align-items: center;
     flex-direction: column;
     z-index: 100;
-    display: none;
+    visibility: hidden;
 }
 
 #closeBox{
     display: flex;
     flex-direction: row-reverse;
-    margin-top: 10px;
+    margin-top: 15px;
     margin-right: 15px;
+    
 }
 
-#closeInfo {
+#buttonClose{
     cursor: pointer;
-    font-size: 20px;
-    font-weight: bold;
-    color: rgb(97, 97, 97);
+    position: absolute;
+}
+
+#buttonClose img{
+    width: 20px;
+    height: auto;
 }
 
 #infoResto {
@@ -189,7 +193,8 @@ h4 {
 h3 {
     color: #e64f2a;
     text-align: center;
-    margin-top: -15px;
+    margin-top: 0;
+    font-size: 25px;
 }
 
 #photoResto {
@@ -201,17 +206,25 @@ h3 {
     height: auto;
     border-radius: 5px;
 }
+
 #adresseResto {
     text-align: center;
+    margin-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #avisResto {
-    margin-bottom: 30px;
     text-align: center;
+    margin-top: 25px;
+    margin-bottom: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #buttonAddAvis{
     cursor: pointer;
+    margin-top: 15px;
 }
 
 /* ---- MARQUEURS DE LA MAP ---- */
@@ -246,10 +259,12 @@ z-index: 100;
 #footer{
     background-color: #eeeeee;
     width: 100%;
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    border-bottom: 1px solid red;
 }
 
 #footer p {

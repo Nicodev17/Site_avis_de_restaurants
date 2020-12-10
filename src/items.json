@@ -2,6 +2,7 @@
     {
        "restaurantName":"Arlequin",
        "address":"1 Rue du Cheval Blanc, 86100 Châtellerault",
+       "photo": "media/photo_resto/img_1.jpg",
        "lat":46.817265, 
        "lon":0.543129,
        "ratings":[
@@ -18,6 +19,7 @@
     {
        "restaurantName":"La petite auberge",
        "address":"14 Rue du Cognet, 86100 Châtellerault",
+       "photo": "media/photo_resto/img_2.jpg",
        "lat":46.814977,
        "lon":0.543740,
        "ratings":[
@@ -34,6 +36,7 @@
     {
       "restaurantName":"Crêperie Le Kerlouët",
       "address":"149 Rue Bourbon, 86100 Châtellerault",
+      "photo": "media/photo_resto/img_3.jpg",
       "lat":46.818817,
       "lon":0.544039,
       "ratings":[
@@ -50,11 +53,12 @@
    {
       "restaurantName":"Le Gresko",
       "address":"23 Place Emile Zola, 86100 Châtellerault",
+      "photo": "media/photo_resto/img_4.jpg",
       "lat":46.818029,
       "lon":0.544494,
       "ratings":[
          {
-            "stars":1,
+            "stars":2,
             "comment":"Pas terrible, service beaucoup trop long"
          },
          {
@@ -66,6 +70,7 @@
    {
       "restaurantName":"Apicius",
       "address":"7 Boulevard Sadi Carnot, 86100 Châtellerault",
+      "photo": "media/photo_resto/img_1.jpg",
       "lat":46.817937,
       "lon":0.549039,
       "ratings":[
@@ -82,6 +87,7 @@
    {
       "restaurantName":"Auberge du lac",
       "address":"53 Avenue Camille Pagé, 86100 Châtellerault",
+      "photo": "media/photo_resto/img_2.jpg",
       "lat": 46.801527, 
       "lon": 0.528169,
       "ratings":[
@@ -98,6 +104,7 @@
    {
       "restaurantName":"Ô Rendez-vous",
       "address":"189 Rue d'Antran, 86100 Châtellerault",
+      "photo": "media/photo_resto/img_3.jpg",
       "lat": 46.826381,
       "lon": 0.539606,
       "ratings":[

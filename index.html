@@ -22,10 +22,41 @@
         </div>
         <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS ! 👌</h2>
     </header>
+    
+    <div id="overlay">
+        <div id="infoResto">
+            
+            <div id="closeBox">
+                <buton id="closeInfo" title="Fermer la fenêtre"> x </buton>
+            </div>
+           
+
+            <h3> Nom resto </h3>
+
+            <div id="photoResto"> <img src="media/photo_resto/img_1.jpg" alt="photo du restaurant">
+            </div>
+
+            <div id="adresseResto">
+                <p> Adresse : XXXX</p>
+            </div>
+
+            <div id="avisResto">
+                <h5> Avis laissés sur ce restaurant : </h5>
+
+                <p> "Avis" </p>
+                <p> "Avis" </p>
+                <p> "Avis" </p>
+                <p> "Avis" </p>
+                <p> "Avis" </p>
+
+                <button id="buttonAddAvis"> Ajouter un avis sur ce restaurant </button>
+            </div>
+        </div>
+    </div>
 
     <!-- zone de filtrage -->
     <div class="zoneFiltrage">
-        <h3> Filtrer les restaurants : </h3>
+        <p> Filtrer les restaurants : </p>
         
         <div id="zoneRange">
             <input type="text" readonly="readonly" id="note">
@@ -37,8 +68,8 @@
         <div id="zoneMap">
             <!-- map affichée ici -->
         </div>
-
-        <div class="zoneListe">
+        
+        <div id="zoneListe">
             <ul>
                 <li></li>
                 <li></li>
@@ -52,6 +83,10 @@
                 <li></li>
             </ul>
         </div>
+    </div>
+
+    <div id="footer">
+        <p> Site développé dans le cadre d'une formation OpenClassrooms</p>
     </div>
     
     <!-- <script src="config.js"></script> -->

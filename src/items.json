@@ -94,5 +94,21 @@
             "comment":"Simple et efficace"
          }
       ]
+   },
+   {
+      "restaurantName":"Ô Rendez-vous",
+      "address":"189 Rue d'Antran, 86100 Châtellerault",
+      "lat": 46.826381,
+      "lon": 0.539606,
+      "ratings":[
+         {
+            "stars":3,
+            "comment":"Pas mal mais un peu trop classique"
+         },
+         {
+            "stars":4,
+            "comment":"De la bonne cuisine française"
+         }
+      ]
    }
  ]

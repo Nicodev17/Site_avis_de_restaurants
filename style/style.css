@@ -3,6 +3,7 @@ body {
     width: 100%;
     height: auto;
     margin: 0;
+    /* overflow: hidden; A ACTIVER AU MOMENT DU POPUP */
 }
 
 /* ---- BARRE DU HEADER ---- */
@@ -53,10 +54,11 @@ h2 {
     margin-left: 50px;
 }
 
-h3 {
+.zoneFiltrage p {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(88, 88, 88);
     font-size: 1em;
+    font-weight: bold;
     margin-right: 25px;
     margin-bottom: 15px;
 }
@@ -84,6 +86,8 @@ h3 {
 .affichage {
     display: flex;
     flex-direction: row;
+    border-top: 7px solid rgb(182, 182, 182);
+    border-bottom: 4px solid rgb(160, 160, 160);
 }
 
 /* ---- ZONE DE LA MAP ---- */
@@ -91,60 +95,123 @@ h3 {
 #zoneMap {
     width: 65%;
     height: 600px;
-    border: 5px solid rgb(160, 160, 160);
+    
 }
 
-/* ---- ZONE DES AVIS ---- */
+/* ---- ZONE DE LA LISTE ---- */
 
-.zoneListe {
+#zoneListe {
     width: 35%;
     height: 600px;
-    border: 5px solid rgb(94, 94, 94);
     overflow-y: scroll;
 }
 
-.zoneListe li {
+#zoneListe li {
     height: 130px;
-    border: 3px solid rgb(151, 151, 151);
+    border: 3px solid rgb(177, 177, 177);
+    border-radius: 6px;
     margin-top: 20px;
     margin-left: -20px;
     margin-right: 10px;
     list-style: none;
     cursor: pointer;
+    display: none;
 }
 
-.zoneListe li:hover {
-    border: 3px solid rgb(153, 80, 80);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+#zoneListe li:hover {
+    border: 3px solid rgb(143, 143, 143);
+    background-color: rgba(233, 233, 233, 0.918)
 }
 
 h4 {
     font-family: Arial, Helvetica, sans-serif;
-    color: #be444a;
-    font-size: 1em;
-    margin-top: 4px;
-    margin-left: 7px;
+    color: #e64f2a;
+    font-size: 1.1em;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .restoAdress {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(66, 66, 66);
-    font-size: 0.9em;
-    margin-left: 7px;
+    font-size: 0.95em;
+    text-align: center;
 }
 
 .restoNote {
-    font-family: Arial, Helvetica, sans-serif;
-    color: rgb(177, 70, 21);
-    font-size: 0.9em;
-    margin-left: 7px;
+    /* font-family: Arial, Helvetica, sans-serif; */
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #e64f2a;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
 }
 
-.restoComment {
+/* ---- OVERLAY POP UP INFO RESTO ---- */
+
+
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(139, 139, 139, 0.562);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+    display: none;
+}
+
+#closeBox{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 10px;
+    margin-right: 15px;
+}
+
+#closeInfo {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(97, 97, 97);
+}
+
+#infoResto {
+    width: 55%;
+    height: 550px;
+    background-color: #ffffff;
+    border: 4px solid rgb(124, 124, 124);
+    overflow-y: scroll;
     font-family: Arial, Helvetica, sans-serif;
-    color: rgb(66, 66, 66);
-    font-size: 0.85em;
-    margin-left: 7px;
+}
+
+h3 {
+    color: #e64f2a;
+    text-align: center;
+    margin-top: -15px;
+}
+
+#photoResto {
+    text-align: center;
+}
+
+#photoResto img {
+    width: 70%;
+    height: auto;
+    border-radius: 5px;
+}
+#adresseResto {
+    text-align: center;
+}
+
+#avisResto {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#buttonAddAvis{
+    cursor: pointer;
 }
 
 /* ---- MARQUEURS DE LA MAP ---- */
@@ -171,5 +238,21 @@ h4 {
 transform:scale(1.25);
 filter: saturate(500%);
 -webkit-filter: saturate(500%);
-z-index: 10;
+z-index: 100;
+}
+
+/* ---- FOOTER ---- */
+
+#footer{
+    background-color: #eeeeee;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#footer p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(114, 114, 114);
 }

@@ -30,6 +30,11 @@ class Restaurant {
             });
         }
     }    
+
+    // Méthode pour récupérer la photo StreetView du resto
+    getPhoto(){
+
+    } 
     
     // Méthode pour ajouter un avis (note + com)
     addRating(stars, comment){

@@ -1,8 +1,13 @@
 /* ---- CORPS DE LA PAGE ---- */
+html {
+    height: 100%;
+}
+
 body {
-    width: 100%;
-    height: auto;
+    min-height: 100%;
     margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 /* ---- BARRE DU HEADER ---- */
@@ -46,11 +51,12 @@ h2 {
 
 .zoneFiltrage {
     height: 80px;
+    background-color: #eeeeee;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 50px;
+    padding-left: 50px;
 }
 
 .zoneFiltrage p {
@@ -74,7 +80,8 @@ h2 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.88em;
     font-weight: bold;
-    color: #e64f2a; 
+    color: #e64f2a;
+    background-color: #eeeeee;
     margin-bottom: 10px;
     border: 0;
     outline-style : none;
@@ -85,8 +92,8 @@ h2 {
 .affichage {
     display: flex;
     flex-direction: row;
-    border-top: 7px solid rgb(182, 182, 182);
-    border-bottom: 4px solid rgb(160, 160, 160);
+    border-top: 5px solid rgb(182, 182, 182);
+    border-bottom: 4px solid rgb(182, 182, 182);
 }
 
 /* ---- ZONE DE LA MAP ---- */
@@ -94,7 +101,6 @@ h2 {
 #zoneMap {
     width: 65%;
     height: 600px;
-    
 }
 
 /* ---- ZONE DE LA LISTE ---- */
@@ -149,18 +155,16 @@ h4 {
 
 /* ---- OVERLAY POP UP INFO RESTO ---- */
 
-
 #overlay {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(139, 139, 139, 0.562);
-    display: flex;
+    background-color: rgba(133, 133, 133, 0.562);
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    z-index: 100;
-    visibility: hidden;
+    z-index: 300;
+    display: none;
 }
 
 #closeBox{
@@ -179,6 +183,11 @@ h4 {
 #buttonClose img{
     width: 20px;
     height: auto;
+}
+
+#buttonClose img:hover {
+    filter: saturate(200%);
+    -webkit-filter: saturate(200%);
 }
 
 #infoResto {
@@ -239,7 +248,7 @@ h3 {
     cursor: pointer;
     filter: saturate(500%);
     -webkit-filter: saturate(500%);
-    z-index: 10;
+    z-index: 300;
 }
 
 .marker.is-active {
@@ -252,19 +261,39 @@ transform:scale(1.25);
 filter: saturate(500%);
 -webkit-filter: saturate(500%);
 z-index: 100;
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: -57px;
+margin-left: -55px;
+}
+
+#infoBulle {
+    width: 100px;
+    height: auto;
+    margin-top: 1px;
+    padding: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: rgba(75, 75, 75, 0.849);
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.733);
+    border-radius: 20px;
+    border: 3px solid #d1d1d1;
 }
 
 /* ---- FOOTER ---- */
 
 #footer{
-    background-color: #eeeeee;
+    position: absolute;
     width: 100%;
-    height: 80px;
+    height: 70px;
+    background-color: #eeeeee;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    border-bottom: 1px solid red;
 }
 
 #footer p {

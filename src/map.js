@@ -10,6 +10,7 @@ class GoogleMap {
         this.map = null;
         this.userPosition = null;
         this.restoMarker = null;
+        this.arrayMarkers = [];
     }
 
     /**
@@ -35,7 +36,7 @@ class GoogleMap {
                         this.div = document.createElement('div')
                         this.div.classList.add('marker')
                         this.div.style.position = 'absolute'
-                        this.div.innerHTML = '<img src="' + this.iconSrc + '"alt="bug" />'
+                        this.div.innerHTML = '<img src="' + this.iconSrc + '"alt="image marker" />'
                         this.getPanes().overlayImage.appendChild(this.div)
                     }
                 

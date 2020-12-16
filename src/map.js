@@ -1,12 +1,10 @@
 /*----------------------------------------------------------------------
--------|| Initialisation map, position et restaurants JSON ||-----------
+-----------------|| Initialisation map et positions  ||-----------------
 ----------------------------------------------------------------------*/
-
-// zone d'affichage de la map
-let zoneMap = document.querySelector('#zoneMap');
 
 class GoogleMap {
     constructor() {
+        this.zoneMap = document.querySelector('#zoneMap');
         this.map = null;
         this.userPosition = null;
         this.restoMarker = null;
@@ -116,12 +114,7 @@ class GoogleMap {
 --------------------|| Fonction d'initialisation ||---------------------
 ----------------------------------------------------------------------*/
 const initMap = async function() {
-    let mapClass = new GoogleMap();
-    await mapClass.load(zoneMap);
+    const mapClass = new GoogleMap();
+    await mapClass.load(this.zoneMap);
     await mapClass.geoloc();
-    await initResto();
-}
-
-if (zoneMap !== null) {
-    initMap();
 }

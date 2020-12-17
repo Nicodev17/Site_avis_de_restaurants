@@ -3,8 +3,8 @@
 ----------------------------------------------------------------------*/
 class Application {
   constructor() {
-    this.arrayRestaurants = [];
     this.mapClass = new GoogleMap();
+    this.arrayRestaurants;
   }
 
   testVar() {
@@ -33,7 +33,7 @@ class Application {
 
   /* ---- Récupération des valeur du slider et filtrage ---- */
   filter() {
-    console.log(this.arrayRestaurants);
+    //console.log(this.arrayRestaurants);
     // this.arrayRestaurants.forEach(element => {
     //   console.log('test');
     // });
@@ -50,117 +50,107 @@ class Application {
 
 
   /*----------------------------------------------------------------------
-  --------------|| Récupération et affichage des resto ||-----------------
+  -------------|| Récupération des restos (requete JSON) ||---------------
   ----------------------------------------------------------------------*/
+  async getResto() {
+    // Promesse synchrone sur le fichier json 
+    const restaurants = await fetch('src/items.json')
+      .then(resultat => resultat.json())
+      .then(json => json)
 
+    // Resultat de la requete
+    let result = restaurants;
+
+    let arrayRestoLoc = [];
+    // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
+    result.forEach(element => {
+      const restaurant = new Restaurant(element.restaurantName, element.photo, element.address, element.lat, element.lon, element.ratings);
+      arrayRestoLoc.push(restaurant)
+    });
+    this.arrayRestaurants = arrayRestoLoc;
+  } // Fin fonction getResto
+
+  /*----------------------------------------------------------------------
+  ---------------|| Affichage des restos (map et liste) ||----------------
+  ----------------------------------------------------------------------*/
   async initResto() {
     let mapClass = this.mapClass;
-    let arrayRestaurants = this.arrayRestaurants;
     await this.mapClass.load(zoneMap);
     await this.mapClass.geoloc();
+    await this.getResto();
+    let arrayRestaurants = this.arrayRestaurants;
     let isPopup = false;
-    let restaurants;
 
-    // Requête pour obtenir tous les resto du fichier JSON
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-      if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
-        var response = JSON.parse(this.responseText);
-        restaurants = response;
+    // Tableau contenant tous les objets restaurant
+    console.table(arrayRestaurants);
 
-        // Pour chaque resto
-        for (let i = 0; i < restaurants.length; i++) {
-          let item = restaurants[i];
-          let listItem = $('#zoneListe li:eq(' + i + ')');
+    // ---- Pour chaque objet restaurant ----
+    for (let i = 0; i < arrayRestaurants.length; i++) {
+      let listItem = $('#zoneListe li:eq(' + i + ')');
+      let item = this.arrayRestaurants[i];
 
-          // Création d'un marqueur perso
-          let marker = mapClass.addMarker(item.lat, item.lon, 'media/icon_marker.png');
+      // ---- Création d'un marqueur perso ----
+      let marker = mapClass.addMarker(item.position.lat, item.position.lon, 'media/icon_marker.png');
 
-          // Marqueurs de base en arrière plan
-          // let markerBack = new google.maps.Marker({
-          //   position: {lat: item.lat, lng: item.lon },
-          //   map: this.mapClass.map,
-          //   opacity: 1,
-          // });
+      // // Marqueurs de base (en arrière plan)
+      // let markerBack = new google.maps.Marker({
+      //   position: {lat: item.lat, lng: item.lon },
+      //   map: this.mapClass.map,
+      //   opacity: 1,
+      // });
 
-          // Evenement du comportement des marqueurs au survol d'un item de la liste
-          let text = item.restaurantName;
+      // ---- Affichage dans la liste de droite ----
+      listItem.html('<h4>' + item.name + '</h4>'
+        + '<p class="restoAdress">' + item.address + '</p>'
+        + '<p class="restoNote">' + item.calculAverage() + '/5 ★ </p>').css('display', 'block');
 
-          $(document).ready(function event() {
-            listItem.hover(
-              function () {
-                marker.activated();
-                $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
-              },
-              function () {
-                $('#infoBulle').remove();
-                marker.desactivated();
-              }
-            );
-          });
+      // ---- Comportement des marqueurs au survol d'un item de la liste ----
+      let text = item.name;
+      $(document).ready(function event() {
+        listItem.hover(
+          function () {
+            marker.activated();
+            $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
+          },
+          function () {
+            $('#infoBulle').remove();
+            marker.desactivated();
+          }
+        );
+      });
 
-          // Pop up fenetre info
-          $('#zoneListe li:eq(' + i + ')').click(function () {
-            // Modification de la variable
-            isPopup = true;
-            // Affichage
-            $('#overlay').css('display', 'flex');
-            // Injection des infos
-            $('h3').html(restaurant.name);
-            $('#photoResto').html('<img src="' + restaurant.photo + '"alt="photo du restaurant">');
-            $('#adresseResto p').html('Adresse : ' + restaurant.address);
-            $('#avisResto p:eq(' + i + ')').html(restaurant.getComments());
+      // ---- Pop up fenêtre info lors du clic sur un item de la liste ----
+      $('#zoneListe li:eq(' + i + ')').click(function () {
+        // Modification de la variable
+        isPopup = true;
+        // Affichage
+        $('#overlay').css('display', 'flex');
+        // Injection des infos
+        $('h3').html(item.name);
+        $('#photoResto').html('<img src="' + item.photo + '"alt="photo du restaurant">');
+        $('#adresseResto p').html('Adresse : ' + item.address);
+        $('#avisResto p:eq(' + i + ')').html(item.getComments());
 
-            // Fermeture fenetre info
-            $('#buttonClose').click(function () {
-              $('#overlay').css('display', 'none');
-              isPopup = false;
-            });
+        // Fermeture fenetre info
+        $('#buttonClose').click(function () {
+          $('#overlay').css('display', 'none');
+          isPopup = false;
+        });
+      });
 
-            // Fermeture de la fenetre lors du clic à l'extérieur (bug)
-            // if(isPopup === true) {
-            //   console.log('la fenetre pop up s\'ouvre');
+      // // Fermeture de la fenetre lors du clic à l'extérieur (bug)
+      // if(isPopup === true) {
+      //   console.log('la fenetre pop up s\'ouvre');
 
-            //   $(document).click(function(event) { 
-            //     if(!$(event.target).closest('#infoResto').length) {
-            //       //$('#overlay').css('display', 'none');
-            //       console.log('clic en dehors de la fenetre');
-            //     } 
-            //   });
-            // }
-          });
-
-          // Création d'un objet contenant les méthodes d'instance
-          const restaurant = new Restaurant(item.restaurantName, item.photo, item.address, item.lat, item.lon, item.ratings);
-          arrayRestaurants.push(restaurant);
-
-          // InfoBulles sur les marqueurs
-          // let marker1 = markerBack;
-          // arrayRestaurants.forEach(function(){
-          //   var infowindow = new google.maps.InfoWindow({maxWidth: 300, 
-          //     //On définit la position d'origine de l'infoWindow (la position du marqueur) 
-          //     position: new google.maps.LatLng(item.lat, item.lon), 
-          //     //On définit le texte à afficher dans l'infoWindow 
-          //     content: restaurant.name });
-          //     //On ajoute un listener d'événement : on écoute le clic sur le marqueur
-          //     google.maps.event.addListener(marker1, 'click', function() {
-          //     // Ouverture de l'infobulle 
-          //     infowindow.open(mapClass.map, marker1);
-          //     });
-          // });
-
-          // Affichage dans la liste
-          listItem.html('<h4>' + restaurant.name + '</h4>'
-            + '<p class="restoAdress">' + restaurant.address + '</p>'
-            + '<p class="restoNote">' + restaurant.calculAverage() + '/5 ★ </p>').css('display', 'block');
-
-        }; // fin boucle for
-        console.table(arrayRestaurants);
-      }
-    } // fin requete
-    request.open("GET", "src/items.json");
-    request.send();
+      //   $(document).click(function(event) { 
+      //     if(!$(event.target).closest('#infoResto').length) {
+      //       //$('#overlay').css('display', 'none');
+      //       console.log('clic en dehors de la fenetre');
+      //     } 
+      //   });
+      // }
+    } // Fin boucle for
 
   } // Fin fonction initResto
 
-} // Fin class Application
+} // Fin classe Application

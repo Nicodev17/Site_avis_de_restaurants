@@ -88,9 +88,11 @@ class Application {
     // ---- Pour chaque objet restaurant ----
     for (let i = 0; i < arrayRestaurants.length; i++) {
       let item = arrayRestaurants[i];
-
+      
       // ---- Création d'un marqueur perso ----
-      let marker = mapClass.addMarker(item.position.lat, item.position.lon, 'media/icon_marker.png');
+      let idMarker = i;
+      let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
+      //console.log(marker.id);
 
       // // Marqueurs de base (en arrière plan)
       // let markerBack = new google.maps.Marker({
@@ -122,6 +124,16 @@ class Application {
         );
       });
 
+      //---- Comportement d'un marqueur à son survol ----
+      // $(document).ready(function event() {
+      //   $('.marker').hover(function() {
+      //     marker.onSurvol();
+      //     },
+      //     function() {
+      //       marker.offSurvol();
+      //     });
+      // });
+
       // ---- Pop up fenêtre info lors du clic sur un item de la liste ----
       $('#zoneListe li:eq(' + i + ')').click(function () {
         // Modification de la variable
@@ -131,13 +143,18 @@ class Application {
         // Injection des infos
         $('h3').html(item.name);
         $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">'); 
-        $('#adresseResto p').html('Adresse : ' + item.address);
-        $('#avisResto p:eq(' + i + ')').html(item.getComments());
+        $('#adresseResto p').text(item.address);
+        $('#noteMoyenne p').text('Note moyenne :  ' + item.calculAverage() + ' / 5 ★');
+        // Récupération des avis
+        item.getComments().forEach(element => {
+          $('#zoneAvis h5').after('<p class="ratingItem"> Note : ' + element.stars + '/5' + ' - " ' + element.comment + ' " ' + '</p>');
+        });
 
         // Fermeture fenetre info
         $('#buttonClose').click(function () {
-          $('#overlay').css('display', 'none');
           isPopup = false;
+          $('#overlay').css('display', 'none');
+          $('.ratingItem').remove();
         });
       });
 

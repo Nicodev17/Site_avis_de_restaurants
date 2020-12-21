@@ -8,8 +8,6 @@ const newApplication = new Application();
 
 newApplication.sliderInit();
 newApplication.filter();
-//newApplication.getResto();
-//newApplication.initResto();
 
 // Temporaire 
 //newApplication.testVar();

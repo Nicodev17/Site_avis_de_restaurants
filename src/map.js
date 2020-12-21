@@ -8,7 +8,7 @@ class GoogleMap {
         this.map = null;
         this.userPosition = null;
         this.restoMarker = null;
-        this.arrayMarkers = [];
+        //this.arrayMarkers = [];
     }
 
     /**
@@ -22,10 +22,11 @@ class GoogleMap {
                 
                 // Class et méthodes pour les marqueurs personnalisés
                 this.restoMarker = class RestoMarker extends google.maps.OverlayView {
-                    constructor (pos, map, iconSrc) {
+                    constructor (pos, map, id, iconSrc) {
                         super()
                         this.div = null
                         this.pos = pos
+                        this.id = id
                         this.iconSrc = iconSrc
                         this.setMap(map)
                     }
@@ -33,6 +34,7 @@ class GoogleMap {
                     onAdd () {
                         this.div = document.createElement('div')
                         this.div.classList.add('marker')
+                        $(this.div).attr('id', `marker-${this.id}`)
                         this.div.style.position = 'absolute'
                         this.div.innerHTML = '<img src="' + this.iconSrc + '"alt="image marker" />'
                         this.getPanes().overlayImage.appendChild(this.div)
@@ -55,6 +57,15 @@ class GoogleMap {
                     desactivated() {
                         this.div.classList.remove('is-active');
                     }
+
+                    // onSurvol() {
+                    //     this.div.classList.add('is-onSurvol');
+                    //     console.log('marqueur survolé');
+                    // }
+
+                    // offSurvol() {
+                    //     this.div.classList.remove('is-onSurvol');
+                    // }
                 } // Fin class RestoMarker
                 
                 // Création du nouvel objet de la map stocké dans this.map
@@ -90,7 +101,7 @@ class GoogleMap {
                 //Centrage de la map sur l'user
                 this.map.panTo(this.userPosition);
                 // Ajout du marker de l'user
-                this.addMarker(this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
+                const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
                 resolve();
             });
         });
@@ -98,14 +109,15 @@ class GoogleMap {
     
     /**
      * Ajoute un marqueur sur la carte
+     * @param {number} id
      * @param {string} lat 
      * @param {string} lng
      * @param {string} iconSrc
      * @return {restoMarker} 
      */
-    addMarker(lat, lng, iconSrc) {
+    addMarker(id, lat, lng, iconSrc) {
         let coord = new google.maps.LatLng(lat, lng);
-        let marker = new this.restoMarker(coord, this.map, iconSrc);
+        let marker = new this.restoMarker(coord, this.map, id, iconSrc);
         return marker;
     }
 } // fin class GoogleMap

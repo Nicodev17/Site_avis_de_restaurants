@@ -21,13 +21,9 @@ class Restaurant {
 
     // Méthode pour récupérer les commentaires
     getComments(){
-        
-        for(let i = 0 ; i < this.ratings.length ; i++) {
-            this.ratings.forEach(element => {
-                let test = $('#avisResto p:eq(' + i + ')').html(element.comment);
-                return test
-            });
-        }
+        // Retourne un tableau avec tous les avis de chaque resto
+        let avis = this.ratings;
+        return avis;
     }    
 
     // Méthode pour récupérer la photo StreetView du resto

@@ -59,7 +59,7 @@ class GoogleMap {
                 
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
-                    zoom: 14,
+                    zoom: 13.5,
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,

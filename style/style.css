@@ -121,7 +121,7 @@ h2 {
     margin-right: 10px;
     list-style: none;
     cursor: pointer;
-    display: none;
+    /*display: none;*/
 }
 
 #zoneListe li:hover {

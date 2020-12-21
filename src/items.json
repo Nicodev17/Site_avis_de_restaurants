@@ -2,9 +2,8 @@
     {
        "restaurantName":"Arlequin",
        "address":"1 Rue du Cheval Blanc, 86100 Châtellerault",
-       "photo": "media/photo_resto/img_1.jpg",
-       "lat":46.817265, 
-       "lon":0.543129,
+       "lat":46.81732790181293, 
+       "lon":0.5431731609671753,
        "ratings":[
           {
              "stars":4,
@@ -19,9 +18,8 @@
     {
        "restaurantName":"La petite auberge",
        "address":"14 Rue du Cognet, 86100 Châtellerault",
-       "photo": "media/photo_resto/img_2.jpg",
-       "lat":46.814977,
-       "lon":0.543740,
+       "lat":46.81509053759309,
+       "lon":0.5437387609629157,
        "ratings":[
           {
              "stars":5,
@@ -36,9 +34,8 @@
     {
       "restaurantName":"Crêperie Le Kerlouët",
       "address":"149 Rue Bourbon, 86100 Châtellerault",
-      "photo": "media/photo_resto/img_3.jpg",
-      "lat":46.818817,
-      "lon":0.544039,
+      "lat":46.818794822288346,
+      "lon":0.5440248913534452,
       "ratings":[
          {
             "stars":4,
@@ -53,9 +50,8 @@
    {
       "restaurantName":"Le Gresko",
       "address":"23 Place Emile Zola, 86100 Châtellerault",
-      "photo": "media/photo_resto/img_4.jpg",
-      "lat":46.818029,
-      "lon":0.544494,
+      "lat":46.81802034062376,
+      "lon":0.5444551605905151,
       "ratings":[
          {
             "stars":2,
@@ -70,9 +66,8 @@
    {
       "restaurantName":"Apicius",
       "address":"7 Boulevard Sadi Carnot, 86100 Châtellerault",
-      "photo": "media/photo_resto/img_1.jpg",
-      "lat":46.817937,
-      "lon":0.549039,
+      "lat":46.8179344029311,
+      "lon":0.5490400378119894,
       "ratings":[
          {
             "stars":2,
@@ -87,9 +82,8 @@
    {
       "restaurantName":"Auberge du lac",
       "address":"53 Avenue Camille Pagé, 86100 Châtellerault",
-      "photo": "media/photo_resto/img_2.jpg",
-      "lat": 46.801527, 
-      "lon": 0.528169,
+      "lat":46.801583663115466, 
+      "lon":0.5279938553704516,
       "ratings":[
          {
             "stars":5,
@@ -104,17 +98,32 @@
    {
       "restaurantName":"Ô Rendez-vous",
       "address":"189 Rue d'Antran, 86100 Châtellerault",
-      "photo": "media/photo_resto/img_3.jpg",
-      "lat": 46.826381,
-      "lon": 0.539606,
+      "lat":46.826415053735026,
+      "lon":0.5394794927478711,
       "ratings":[
          {
-            "stars":3,
-            "comment":"Pas mal mais un peu trop classique"
+            "stars":4,
+            "comment":"Pas mal du tout, très bons plats"
          },
          {
             "stars":4,
             "comment":"De la bonne cuisine française"
+         }
+      ]
+   },
+   {
+      "restaurantName":"La Brasserie Chez Julien",
+      "address":"10 Avenue Camille Pagé, 86100 Châtellerault",
+      "lat":46.797593962861846,
+      "lon":0.5278748452455855,
+      "ratings":[
+         {
+            "stars":4,
+            "comment":"Pas mal mais un peu trop classique"
+         },
+         {
+            "stars":3,
+            "comment":"De la cuisine de brasserie, passable"
          }
       ]
    }

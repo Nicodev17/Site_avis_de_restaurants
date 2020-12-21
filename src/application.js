@@ -5,15 +5,12 @@ class Application {
   constructor() {
     this.mapClass = new GoogleMap();
     this.arrayRestaurants;
+    this.filteredArray;
   }
 
-  testVar() {
-    //console.log(this.arrayRestaurants);
-  }
-
-  /*----------------------------------------------------------------------
-  ---------------|| Filtrage des restos selon leur note ||----------------
-  ----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+---------------|| Filtrage des restos selon leur note ||----------------
+----------------------------------------------------------------------*/
 
   /* ----- Création du slider de filtrage des notes ---- */
   sliderInit() {
@@ -26,26 +23,30 @@ class Application {
         $("#note").val("Note entre " + ui.values[0] + " et " + ui.values[1] + " ★");
       }
     });
-
     $("#note").val("Note entre " + $("#slider-range").slider("values", 0) +
       " et " + $("#slider-range").slider("values", 1) + " ★");
   }; // Fin fonction sliderInit
 
-  /* ---- Récupération des valeur du slider et filtrage ---- */
-  filter() {
-    //console.log(this.arrayRestaurants);
-    // this.arrayRestaurants.forEach(element => {
-    //   console.log('test');
-    // });
-
-    $("#slider-range").on("slide", function (event, ui) {
+  /* ---- Récupération des valeurs du slider et filtrage ---- */
+  async filter() {
+    await this.getResto();
+    await this.initResto(this.arrayRestaurants);
+      
+    $("#slider-range").on("slide", (event, ui) => {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
+      
+      const filtreNote = this.arrayRestaurants.filter(element => element.calculAverage() >= value1 && element.calculAverage() <= value2 );
+      this.filteredArray = filtreNote;
+      console.log(this.filteredArray);
 
-      console.log(value1);
-      console.log(value2);
+      // Vidage de la liste précédente
+      $('#zoneListe ul').empty();
 
+      // On relance la fonction initResto avec les resto filtrés
+      this.initResto(this.filteredArray);
     });
+
   } // Fin fonction filter
 
 
@@ -64,7 +65,7 @@ class Application {
     let arrayRestoLoc = [];
     // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
     result.forEach(element => {
-      const restaurant = new Restaurant(element.restaurantName, element.photo, element.address, element.lat, element.lon, element.ratings);
+      const restaurant = new Restaurant(element.restaurantName, element.address, element.lat, element.lon, element.ratings);
       arrayRestoLoc.push(restaurant)
     });
     this.arrayRestaurants = arrayRestoLoc;
@@ -73,12 +74,12 @@ class Application {
   /*----------------------------------------------------------------------
   ---------------|| Affichage des restos (map et liste) ||----------------
   ----------------------------------------------------------------------*/
-  async initResto() {
+  async initResto(arrayResto) {
     let mapClass = this.mapClass;
     await this.mapClass.load(zoneMap);
     await this.mapClass.geoloc();
     await this.getResto();
-    let arrayRestaurants = this.arrayRestaurants;
+    let arrayRestaurants = arrayResto;
     let isPopup = false;
 
     // Tableau contenant tous les objets restaurant
@@ -86,8 +87,7 @@ class Application {
 
     // ---- Pour chaque objet restaurant ----
     for (let i = 0; i < arrayRestaurants.length; i++) {
-      let listItem = $('#zoneListe li:eq(' + i + ')');
-      let item = this.arrayRestaurants[i];
+      let item = arrayRestaurants[i];
 
       // ---- Création d'un marqueur perso ----
       let marker = mapClass.addMarker(item.position.lat, item.position.lon, 'media/icon_marker.png');
@@ -100,9 +100,12 @@ class Application {
       // });
 
       // ---- Affichage dans la liste de droite ----
-      listItem.html('<h4>' + item.name + '</h4>'
+      $('#zoneListe ul').append('<li class="listItem">' + '<h4>' + item.name + '</h4>'
         + '<p class="restoAdress">' + item.address + '</p>'
-        + '<p class="restoNote">' + item.calculAverage() + '/5 ★ </p>').css('display', 'block');
+        + '<p class="restoNote">' + item.calculAverage() + '/5 ★ </p>' + '</li>');
+
+      // Catch de chaque item de liste
+      let listItem = $('#zoneListe li:eq(' + i + ')');
 
       // ---- Comportement des marqueurs au survol d'un item de la liste ----
       let text = item.name;
@@ -127,7 +130,7 @@ class Application {
         $('#overlay').css('display', 'flex');
         // Injection des infos
         $('h3').html(item.name);
-        $('#photoResto').html('<img src="' + item.photo + '"alt="photo du restaurant">');
+        $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">'); 
         $('#adresseResto p').html('Adresse : ' + item.address);
         $('#avisResto p:eq(' + i + ')').html(item.getComments());
 

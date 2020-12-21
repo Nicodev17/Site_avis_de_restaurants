@@ -1,7 +1,6 @@
 class Restaurant {
-    constructor(name, photo, address, lat, lon, ratings) {
+    constructor(name, address, lat, lon, ratings) {
         this.name = name;
-        this.photo = photo;
         this.address = address;
         this.position = {
             lat,
@@ -33,8 +32,13 @@ class Restaurant {
 
     // Méthode pour récupérer la photo StreetView du resto
     getPhoto(){
-
-    } 
+        let lat = this.position.lat;
+        let lon = this.position.lon;
+        let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+        let url = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${lat},${lon}&fov=80&heading=70&pitch=0&key=${apiKey}`;
+        return url
+    }
+    
     
     // Méthode pour ajouter un avis (note + com)
     addRating(stars, comment){

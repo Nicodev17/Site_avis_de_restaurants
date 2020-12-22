@@ -104,14 +104,16 @@ class Application {
       // ---- Affichage dans la liste de droite ----
       $('#zoneListe ul').append('<li class="listItem">' + '<h4>' + item.name + '</h4>'
         + '<p class="restoAdress">' + item.address + '</p>'
-        + '<p class="restoNote">' + item.calculAverage() + '/5 ★ </p>' + '</li>');
+        + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</li>');
+
+        //console.log(item.getRatings().length);
 
       // Catch de chaque item de liste
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
       // ---- Comportement des marqueurs au survol d'un item de la liste ----
       let text = item.name;
-      $(document).ready(function event() {
+      $(document).ready(function() {
         listItem.hover(
           function () {
             marker.activated();
@@ -138,16 +140,17 @@ class Application {
       $('#zoneListe li:eq(' + i + ')').click(function () {
         // Modification de la variable
         isPopup = true;
-        // Affichage
+        // Affichage du contenu
         $('#overlay').css('display', 'flex');
         // Injection des infos
         $('h3').html(item.name);
         $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">'); 
-        $('#adresseResto p').text(item.address);
-        $('#noteMoyenne p').text('Note moyenne :  ' + item.calculAverage() + ' / 5 ★');
+        $('#adresseResto p').html(item.address);
+        $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
+        $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
         // Récupération des avis
-        item.getComments().forEach(element => {
-          $('#zoneAvis h5').after('<p class="ratingItem"> Note : ' + element.stars + '/5' + ' - " ' + element.comment + ' " ' + '</p>');
+        item.getRatings().forEach(element => {
+          $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '</p>' + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
         });
 
         // Fermeture fenetre info
@@ -156,6 +159,60 @@ class Application {
           $('#overlay').css('display', 'none');
           $('.ratingItem').remove();
         });
+
+        /* Bouton Avis */ 
+        $('#buttonAddAvis').click(function () {
+          // let note = null;
+          // let commentaire = null;
+
+          // Affichage du formulaire
+          $('#formAvis').css('display', 'block');
+          // Disparition du bouton add et apparition du bouton send
+          $('#buttonAddAvis').css('display', 'none')
+
+          // Au clic sur le bouton send
+          // $('#buttonSend').click(function () {
+          //   // envoi du formulaire
+            
+          //   // Disparition du formulaire
+          //   $('#formAvis').css('display', 'none');
+
+          //   // Retour aux boutons de base
+          //   $('#buttonAddAvis').css('display', 'block')
+          //   $('#buttonSend').css('display', 'none');
+          // });
+
+          $('#formAvis').submit(function (e) {
+            e.preventDefault();
+            let error;
+            let noteEnter = $('#addNote');
+            let commentEnter = $('#addCommentaire');
+
+            // Disparition du formulaire
+            $('#formAvis').css('display', 'none');
+            // Retour aux boutons de base
+            $('#buttonAddAvis').css('display', 'block');
+            
+            //console.log(document.forms["formAvis"]["commentaire"]);
+
+            // Détection des erreurs
+            // if(!noteEnter.value || !commentEnter.value ) {
+            //   error = "Formulaire incomplet";
+            // }
+
+            if(error) {
+              e.preventDefault();
+              $('#error').css('display', 'block').html(error);
+              return false
+            } else {
+              alert('Formulaire envoyé !');
+            }
+
+          });
+
+
+        });
+
       });
 
       // // Fermeture de la fenetre lors du clic à l'extérieur (bug)
@@ -169,6 +226,7 @@ class Application {
       //     } 
       //   });
       // }
+
     } // Fin boucle for
 
   } // Fin fonction initResto

@@ -7,6 +7,8 @@
     <title>Vicino Resto - Avis de restaurants près de chez vous</title>
     <link rel="icon" type="image/png" href="media/favicon_pasta.png"/>
     <link rel="stylesheet" href="style/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="style/jquery-ui.css">
     <script src="src/jquery-3.3.1.js"></script>
     <script src="src/jquery-ui.js"></script>
@@ -46,11 +48,28 @@
 
             <div id="zoneAvis">
                 <div id="contentZoneAvis">
-                    <h5> Avis laissés sur ce restaurant : </h5>
+                    <p id="titleAvis"> Avis sur ce restaurant : </p>
 
-                    <button id="buttonAddAvis"> Ajouter un avis </button>
+                    <div id="formAvis" name="formAvis">
+                        <form method="post" action="src/application.js">
+                            <label for="note"> Votre note : </label> 
+                            <input type="number" min="0" max="5" name="note" id="addNote" placeholder="0" value="note"/>
+                            <br>
+                            <textarea name="commentaire" id="addCommentaire" placeholder="Votre commentaire" value="commentaire"></textarea>
+                            <br>
+                            <input type="submit" value="Envoyer" id="buttonSend">
+                        </form>
+
+                        <p id="error"> Erreur </p>   
+                    </div>
+
+                    <div id="buttonAvisBox"> 
+                        <button id="buttonAddAvis"> Ajouter un avis </button>
+                    </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 

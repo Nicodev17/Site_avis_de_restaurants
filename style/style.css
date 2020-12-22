@@ -128,6 +128,7 @@ h2 {
     background-color: rgba(233, 233, 233, 0.918)
 }
 
+/* Nom du resto */
 h4 {
     font-family: Arial, Helvetica, sans-serif;
     color: #e64f2a;
@@ -151,6 +152,12 @@ h4 {
     text-align: center;
 }
 
+/* Petite étoile */
+strong {
+    color: #fbb03b;
+    font-size: 1.2em;
+}
+
 /* ---- OVERLAY POP UP INFO RESTO ---- */
 
 #overlay {
@@ -165,12 +172,23 @@ h4 {
     display: none;
 }
 
+/* Fenetre info */
+#infoResto {
+    width: 40%;
+    height: 490px;
+    margin-bottom: 50px;
+    background-color: #ffffff;
+    border: 4px solid rgb(138, 138, 138);
+    overflow-y: scroll;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Bouton fermeture */
 #closeBox{
     display: flex;
     flex-direction: row-reverse;
     margin-top: 15px;
     margin-right: 15px;
-    
 }
 
 #buttonClose{
@@ -188,15 +206,7 @@ h4 {
     -webkit-filter: saturate(200%);
 }
 
-#infoResto {
-    width: 55%;
-    height: 550px;
-    background-color: #ffffff;
-    border: 4px solid rgb(138, 138, 138);
-    overflow-y: scroll;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
+/* Titre dans la fenetre info (pop up) */
 h3 {
     color: #e64f2a;
     text-align: center;
@@ -204,6 +214,7 @@ h3 {
     font-size: 25px;
 }
 
+/* Contenu dans la fenetre info */
 #photoResto {
     text-align: center;
 }
@@ -215,29 +226,44 @@ h3 {
     border-radius: 5px;
 }
 
-#adresseResto, #noteMoyenne {
+#adresseResto p {
     text-align: center;
+    color: #4b4b4b;
     margin-top: 20px;
-    padding: 0 30px 0 30px
+    padding: 0 30px 0 30px;
+    
 }
 
 #noteMoyenne p {
-    margin-top: 40px;
-    color: #e64f2a;
+    text-align: center;
     font-size: 1.1em;
-    font-weight: 600;
+    font-weight: 700;
+    color: #e64f2a;
+    margin-top: 30px;
+    padding: 0 30px 0 30px
 }
 
-h5 {
+#titleAvis {
     font-size: 1em;
-    font-weight: lighter;
+    font-weight: bold;
+    color: #5a5a5a;
+}
+
+hr {
+    width: 65%;
+    margin-top: 20px;
+    border: 0; 
+    height: 1px; 
+    background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
 }
 
 #zoneAvis {
-    margin-top: 15px;
+    margin-top: 20px;
     margin-bottom: 30px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 10px 0 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -245,14 +271,24 @@ h5 {
 }
 
 #contentZoneAvis {
-    padding: 0 30px 0 30px
+    padding: 0 30px 0 30px;
 }
 
 .ratingItem {
-    font-size: 1em;
+    margin-top: 30px;
 }
 
-#buttonAddAvis{
+.ratingItem p {
+    font-size: 1em;
+    color: rgb(82, 82, 82);
+}
+
+#buttonAvisBox {
+    display: flex;
+    justify-content: center;
+}
+
+#buttonAddAvis, #buttonSend {
     margin-top: 15px;
     padding: 6px 0 6px 0;
 	font: Bold 13px Arial;
@@ -264,10 +300,76 @@ h5 {
     outline-style: none;
 }
 
-#buttonAddAvis:hover{
+#buttonAddAvis:hover, #buttonSend:hover  {
     cursor: pointer;
 	background: #aa3728;
     color:#fff;
+}
+
+/* Formulaire d'ajout de commentaire */
+#formAvis {
+    margin: 25px 0 15px 0;
+    display: none;
+}
+
+#formAvis form {
+    padding-right: 15px;
+}
+
+#addNote {
+    width: 50px;
+    outline-style: none;
+}
+
+#addCommentaire {
+    width: 100%;
+    height: 60px;
+    margin-top: 20px;
+    outline-style: none;
+}
+
+label {
+    font-size: 1em;
+    font-weight: 600;
+    color: rgb(82, 82, 82);
+}
+
+#error {
+    color: #d34836;
+    display: none;
+}
+
+/* Media Queries Overlay Pop Up */
+
+/* TABLETTE */
+@media screen and (max-width: 70em) {
+
+    #infoResto {
+        width: 50%;
+    }
+}
+
+
+/* SMARTPHONE */
+@media screen and (max-width: 50em) {
+
+    #infoResto {
+        width: 70%;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    #buttonClose img{
+        width: 17px;
+        height: auto;
+    }
+
+    #closeBox {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
 }
 
 /* ---- MARQUEURS DE LA MAP ---- */

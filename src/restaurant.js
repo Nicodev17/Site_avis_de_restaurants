@@ -16,11 +16,13 @@ class Restaurant {
         this.ratings.forEach(element => {
             total += element.stars;
         });
-        return total / this.ratings.length
+        let result = total / this.ratings.length;
+        result = Math.round(result * 10) / 10;
+        return result
     }
 
     // Méthode pour récupérer les commentaires
-    getComments(){
+    getRatings(){
         // Retourne un tableau avec tous les avis de chaque resto
         let avis = this.ratings;
         return avis;
@@ -37,9 +39,16 @@ class Restaurant {
     
     
     // Méthode pour ajouter un avis (note + com)
-    addRating(stars, comment){
+    // addRating(stars, comment){
+    //     let arrayRatings = this.ratings;
 
-    }
+    //     let rating = {
+    //         note: stars,
+    //         commentaire: comment,
+    //       };
+        
+    //     arrayRatings.push(rating); 
+    // }
 
     // Méthode pour ajouter un nouveau resto
     addResto(position){

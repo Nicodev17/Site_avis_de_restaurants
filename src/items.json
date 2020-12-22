@@ -12,7 +12,11 @@
           {
              "stars":5,
              "comment":"Tout simplement mon restaurant préféré !"
-          }
+          },
+          {
+            "stars":2,
+            "comment":" Bof, ce n'était pas de mon goût."
+         }
        ]
     },
     {

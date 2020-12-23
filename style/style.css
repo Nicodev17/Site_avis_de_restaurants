@@ -292,7 +292,6 @@ hr {
     margin-top: 15px;
     padding: 6px 0 6px 0;
 	font: Bold 13px Arial;
-	background: #d34836;
 	color:#fff;
 	width: 130px;
 	border-radius: 4px;
@@ -300,7 +299,21 @@ hr {
     outline-style: none;
 }
 
-#buttonAddAvis:hover, #buttonSend:hover  {
+#buttonAddAvis {
+    background: #d34836;
+}
+
+#buttonSend {
+    background: #fbb03b;
+}
+
+#buttonSend:hover {
+    cursor: pointer;
+	background: #eba12b;
+    color:#fff;
+}
+
+#buttonAddAvis:hover  {
     cursor: pointer;
 	background: #aa3728;
     color:#fff;
@@ -336,6 +349,7 @@ label {
 
 #error {
     color: #d34836;
+    font-size: 0.85em;
     display: none;
 }
 

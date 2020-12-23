@@ -39,16 +39,17 @@ class Restaurant {
     
     
     // Méthode pour ajouter un avis (note + com)
-    // addRating(stars, comment){
-    //     let arrayRatings = this.ratings;
+    addRating(stars, comment){
 
-    //     let rating = {
-    //         note: stars,
-    //         commentaire: comment,
-    //       };
+        let rating = {
+            stars: stars,
+            comment: comment,
+          };
         
-    //     arrayRatings.push(rating); 
-    // }
+        this.ratings.push(rating);
+
+        console.log(this.ratings);
+    }
 
     // Méthode pour ajouter un nouveau resto
     addResto(position){

@@ -8,9 +8,9 @@ class Application {
     this.filteredArray;
   }
 
-/*----------------------------------------------------------------------
----------------|| Filtrage des restos selon leur note ||----------------
-----------------------------------------------------------------------*/
+  /*----------------------------------------------------------------------
+  ---------------|| Filtrage des restos selon leur note ||----------------
+  ----------------------------------------------------------------------*/
 
   /* ----- Création du slider de filtrage des notes ---- */
   sliderInit() {
@@ -31,12 +31,12 @@ class Application {
   async filter() {
     await this.getResto();
     await this.initResto(this.arrayRestaurants);
-      
+
     $("#slider-range").on("slide", (event, ui) => {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
-      
-      const filtreNote = this.arrayRestaurants.filter(element => element.calculAverage() >= value1 && element.calculAverage() <= value2 );
+
+      const filtreNote = this.arrayRestaurants.filter(element => element.calculAverage() >= value1 && element.calculAverage() <= value2);
       this.filteredArray = filtreNote;
       console.log(this.filteredArray);
 
@@ -88,7 +88,7 @@ class Application {
     // ---- Pour chaque objet restaurant ----
     for (let i = 0; i < arrayRestaurants.length; i++) {
       let item = arrayRestaurants[i];
-      
+
       // ---- Création d'un marqueur perso ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
@@ -106,14 +106,14 @@ class Application {
         + '<p class="restoAdress">' + item.address + '</p>'
         + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</li>');
 
-        //console.log(item.getRatings().length);
+      //console.log(item.getRatings().length);
 
       // Catch de chaque item de liste
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
       // ---- Comportement des marqueurs au survol d'un item de la liste ----
       let text = item.name;
-      $(document).ready(function() {
+      $(document).ready(function () {
         listItem.hover(
           function () {
             marker.activated();
@@ -139,12 +139,12 @@ class Application {
       // ---- Pop up fenêtre info lors du clic sur un item de la liste ----
       $('#zoneListe li:eq(' + i + ')').click(function () {
         // Modification de la variable
-        isPopup = true;
+        //isPopup = true;
         // Affichage du contenu
         $('#overlay').css('display', 'flex');
         // Injection des infos
         $('h3').html(item.name);
-        $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">'); 
+        $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
         $('#adresseResto p').html(item.address);
         $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
         $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
@@ -158,60 +158,44 @@ class Application {
           isPopup = false;
           $('#overlay').css('display', 'none');
           $('.ratingItem').remove();
+          $('#formAvis').css('display', 'none');
+          $('#buttonAddAvis').css('display', 'block')
         });
 
-        /* Bouton Avis */ 
+        /* ---- AJOUT D'AVIS ---- */
         $('#buttonAddAvis').click(function () {
           // let note = null;
           // let commentaire = null;
 
-          // Affichage du formulaire
+          // -- Affichage du formulaire --
+          $('#formAvis').slideDown(800);
+          // Scroll auto en bas de la fenetre
+          $('#infoResto').stop().animate({
+            scrollTop: $('#infoResto')[0].scrollHeight
+          }, 800);
           $('#formAvis').css('display', 'block');
-          // Disparition du bouton add et apparition du bouton send
-          $('#buttonAddAvis').css('display', 'none')
+          $('#buttonAddAvis').css('display', 'none');
 
-          // Au clic sur le bouton send
-          // $('#buttonSend').click(function () {
-          //   // envoi du formulaire
-            
-          //   // Disparition du formulaire
-          //   $('#formAvis').css('display', 'none');
-
-          //   // Retour aux boutons de base
-          //   $('#buttonAddAvis').css('display', 'block')
-          //   $('#buttonSend').css('display', 'none');
-          // });
-
+          // Soumission du formulaire
           $('#formAvis').submit(function (e) {
             e.preventDefault();
-            let error;
-            let noteEnter = $('#addNote');
-            let commentEnter = $('#addCommentaire');
+            let noteEnter = document.forms["formAvis"]["note"].value;
+            let commentEnter = document.forms["formAvis"]["commentaire"].value;
+            
+            alert('Commentaire envoyé !');
+            console.log(noteEnter, commentEnter);
+                
+            // Envoi des infos dans la fonction d'ajout d'avis
+            item.addRating(Number(noteEnter), commentEnter);
 
             // Disparition du formulaire
-            $('#formAvis').css('display', 'none');
-            // Retour aux boutons de base
+            $('#formAvis').slideUp(600);
+            //$('#formAvis').css('display', 'none');
             $('#buttonAddAvis').css('display', 'block');
-            
-            //console.log(document.forms["formAvis"]["commentaire"]);
-
-            // Détection des erreurs
-            // if(!noteEnter.value || !commentEnter.value ) {
-            //   error = "Formulaire incomplet";
-            // }
-
-            if(error) {
-              e.preventDefault();
-              $('#error').css('display', 'block').html(error);
-              return false
-            } else {
-              alert('Formulaire envoyé !');
-            }
-
+            // Réinitialisation du formulaire
+            $('#formulaire').get(0).reset();
           });
-
-
-        });
+        }); // Fin de l'ajout d'avis
 
       });
 
@@ -226,7 +210,6 @@ class Application {
       //     } 
       //   });
       // }
-
     } // Fin boucle for
 
   } // Fin fonction initResto

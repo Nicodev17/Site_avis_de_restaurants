@@ -50,17 +50,17 @@
                 <div id="contentZoneAvis">
                     <p id="titleAvis"> Avis sur ce restaurant : </p>
 
-                    <div id="formAvis" name="formAvis">
-                        <form method="post" action="src/application.js">
-                            <label for="note"> Votre note : </label> 
-                            <input type="number" min="0" max="5" name="note" id="addNote" placeholder="0" value="note"/>
+                    <div id="formAvis" >
+                        <form method="post" action="src/application.js" name="formAvis" id="formulaire">
+                            <label for="note"> Votre note : </label>
+                            <input required type="number" min="0" max="5" name="note" id="addNote" value="" placeholder="0">
                             <br>
-                            <textarea name="commentaire" id="addCommentaire" placeholder="Votre commentaire" value="commentaire"></textarea>
+                            <textarea required name="commentaire" id="addCommentaire" value="" placeholder="Votre commentaire"></textarea>
                             <br>
                             <input type="submit" value="Envoyer" id="buttonSend">
                         </form>
 
-                        <p id="error"> Erreur </p>   
+                        <!-- <p id="error"> Erreur </p>    -->
                     </div>
 
                     <div id="buttonAvisBox"> 

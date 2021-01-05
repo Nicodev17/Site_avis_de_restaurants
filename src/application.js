@@ -140,32 +140,40 @@ class Application {
       $('#zoneListe li:eq(' + i + ')').click(function () {
         // Modification de la variable
         //isPopup = true;
+
         // Affichage du contenu
         $('#overlay').css('display', 'flex');
         // Injection des infos
-        $('h3').html(item.name);
-        $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
-        $('#adresseResto p').html(item.address);
-        $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
-        $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
-        // Récupération des avis
-        item.getRatings().forEach(element => {
-          $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '</p>' + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
-        });
+        function displayInfo() {
+          $('h3').html(item.name);
+          $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
+          $('#adresseResto p').html(item.address);
+          $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
+          $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
+          // Récupération des avis
+          item.getRatings().forEach(element => {
+            $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '</p>' + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
+          });
+        }
+        displayInfo();
 
         // Fermeture fenetre info
         $('#buttonClose').click(function () {
-          isPopup = false;
+          //isPopup = false;
           $('#overlay').css('display', 'none');
           $('.ratingItem').remove();
           $('#formAvis').css('display', 'none');
-          $('#buttonAddAvis').css('display', 'block')
+
+          // Réinitialisation du bouton d'ajout de com
+          $('#buttonAddAvis').css('display', 'block');
+          // Réinitialisation du formulaire
+          $('#formulaire').get(0).reset();
+          $('#buttonClose').off();
+          $('#buttonAddAvis').off();
         });
 
         /* ---- AJOUT D'AVIS ---- */
         $('#buttonAddAvis').click(function () {
-          // let note = null;
-          // let commentaire = null;
 
           // -- Affichage du formulaire --
           $('#formAvis').slideDown(800);
@@ -182,21 +190,26 @@ class Application {
             let noteEnter = document.forms["formAvis"]["note"].value;
             let commentEnter = document.forms["formAvis"]["commentaire"].value;
             
-            alert('Commentaire envoyé !');
-            console.log(noteEnter, commentEnter);
-                
-            // Envoi des infos dans la fonction d'ajout d'avis
+            alert('Votre commentaire a été envoyé !');
+          
+            // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
             item.addRating(Number(noteEnter), commentEnter);
+            // Rafraichissement de l'affichage
+            $('.ratingItem').remove();
+            displayInfo();
 
             // Disparition du formulaire
             $('#formAvis').slideUp(600);
-            //$('#formAvis').css('display', 'none');
+            // Réaffichage du bouton d'ajout
             $('#buttonAddAvis').css('display', 'block');
             // Réinitialisation du formulaire
             $('#formulaire').get(0).reset();
-          });
-        }); // Fin de l'ajout d'avis
+            $('#formAvis').off();
 
+            console.table(arrayRestaurants);
+          });
+          $('#buttonAddAvis').off();
+        }); // Fin de l'ajout d'avis
       });
 
       // // Fermeture de la fenetre lors du clic à l'extérieur (bug)

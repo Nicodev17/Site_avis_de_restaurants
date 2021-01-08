@@ -250,7 +250,7 @@ h3 {
 }
 
 hr {
-    width: 65%;
+    width: 80%;
     margin-top: 20px;
     border: 0; 
     height: 1px; 
@@ -283,12 +283,46 @@ hr {
     color: rgb(82, 82, 82);
 }
 
+.ratingItem p:nth-child(2) {
+    margin-top: 25px;
+    padding-right: 35px;
+}
+
+/* bouton de suppression de com */
+#dots {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: -17px;
+    color:rgb(194, 194, 194);
+    font-size: 0.9em;
+}
+
+#bulleSuppr {
+    display: flex;
+    background-color: #adadadc0;
+    height: 25px;
+    padding: 2px;
+    margin-right: 5px;
+    border-radius: 5px;
+    z-index: 15;
+}
+
+#buttonSuppr {
+    cursor: pointer;
+    border:none;
+    outline:none;
+    background-color: rgba(252, 252, 252, 0);
+    color: white;
+    font: Bold 13px Arial;
+}
+
 #buttonAvisBox {
     display: flex;
     justify-content: center;
 }
 
-#buttonAddAvis, #buttonSend {
+#buttonAddAvis, #buttonSend, #buttonCancel {
     margin-top: 15px;
     padding: 6px 0 6px 0;
 	font: Bold 13px Arial;
@@ -307,6 +341,10 @@ hr {
     background: #fbb03b;
 }
 
+#buttonCancel {
+    background-color: #c5c4c4;
+}
+
 #buttonSend:hover {
     cursor: pointer;
 	background: #eba12b;
@@ -317,6 +355,11 @@ hr {
     cursor: pointer;
 	background: #aa3728;
     color:#fff;
+}
+
+#buttonCancel:hover  {
+    cursor: pointer;
+	background: #a5a5a5;
 }
 
 /* Formulaire d'ajout de commentaire */

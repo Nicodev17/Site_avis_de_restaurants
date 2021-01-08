@@ -103,9 +103,9 @@ class Application {
 
       // ---- Affichage dans la liste de droite ----
       $('#zoneListe ul').append('<li class="listItem">' + '<h4>' + item.name + '</h4>'
-        + '<p class="restoAdress">' + item.address + '</p>'
-        + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</li>');
-
+      + '<p class="restoAdress">' + item.address + '</p>'
+      + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</li>');
+      
       //console.log(item.getRatings().length);
 
       // Catch de chaque item de liste
@@ -152,7 +152,8 @@ class Application {
           $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
           // Récupération des avis
           item.getRatings().forEach(element => {
-            $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '</p>' + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
+            $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>' 
+            + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
           });
         }
         displayInfo();
@@ -197,6 +198,9 @@ class Application {
             // Rafraichissement de l'affichage
             $('.ratingItem').remove();
             displayInfo();
+            $('#dots').addClass('fa fa-ellipsis-v');
+            // Maj du nb d'avis et de la note dans la liste de droite
+            $('.restoNote:eq(' + i + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
 
             // Disparition du formulaire
             $('#formAvis').slideUp(600);
@@ -207,9 +211,38 @@ class Application {
             $('#formAvis').off();
 
             console.table(arrayRestaurants);
+
+            // Suppression de com 
+            $('#dots').click(function () {
+              let dotsClicked = true;
+              $('#bulleSuppr').css('display', 'flex');
+              
+              $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
+              $('#buttonSuppr').click(function () {
+                console.log('suppression du com');
+              })
+
+              if (dotsClicked == true) {
+                $('#dots').click(function () {
+                  console.log('TEST');
+                  $('#bulleSuppr').css('display', 'none');
+                });
+                $('#dots').off();
+                dotsClicked = false;
+              }
+            });
+
           });
-          $('#buttonAddAvis').off();
+
+          // Annulation de l'envoi de com
+          $('#buttonCancel').click(function () {
+            $('#formAvis').slideUp(600);
+            $('#buttonAddAvis').css('display', 'block');
+            $('#formulaire').get(0).reset();
+            $('#formAvis').off();
+          });
         }); // Fin de l'ajout d'avis
+        
       });
 
       // // Fermeture de la fenetre lors du clic à l'extérieur (bug)

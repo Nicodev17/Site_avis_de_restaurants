@@ -92,7 +92,7 @@ h2 {
 .affichage {
     display: flex;
     flex-direction: row;
-    border-top: 5px solid rgb(182, 182, 182);
+    border-top: 4px solid rgb(182, 182, 182);
     border-bottom: 4px solid rgb(182, 182, 182);
 }
 
@@ -114,13 +114,15 @@ h2 {
 
 #zoneListe li {
     height: 130px;
-    border: 3px solid rgb(177, 177, 177);
+    border: 3px solid rgb(185, 185, 185);
     border-radius: 6px;
     margin-top: 20px;
     margin-left: -20px;
     margin-right: 10px;
     list-style: none;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
 }
 
 #zoneListe li:hover {
@@ -129,19 +131,28 @@ h2 {
 }
 
 /* Nom du resto */
+.contentItem {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 10px;
+}
+
 h4 {
     font-family: Arial, Helvetica, sans-serif;
     color: #e64f2a;
-    font-size: 1.1em;
-    margin-top: 10px;
-    text-align: center;
+    font-size: 1.18em;
+    margin-bottom: 0px;
 }
 
 .restoAdress {
     font-family: Arial, Helvetica, sans-serif;
-    color: rgb(66, 66, 66);
-    font-size: 0.95em;
-    text-align: center;
+    color: rgb(88, 88, 88);
+    font-size: 0.91em;
+    text-align: right;
+    margin-top: 20px;
 }
 
 .restoNote {
@@ -149,13 +160,30 @@ h4 {
     color: #e64f2a;
     font-size: 1em;
     font-weight: bold;
-    text-align: center;
+    margin-top: -5px;
 }
 
 /* Petite étoile */
 strong {
     color: #fbb03b;
     font-size: 1.2em;
+}
+
+/* Photo du resto dans la liste */
+.photoBox {
+    width: 30%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.photoList {
+    width: 100%;
+    height: auto;
+    border: 4px solid rgb(207, 207, 207);
+    border-radius: 5px;
 }
 
 /* ---- OVERLAY POP UP INFO RESTO ---- */
@@ -220,7 +248,7 @@ h3 {
 }
 
 #photoResto img {
-    width: 70%;
+    width: 65%;
     height: auto;
     border: 5px solid rgb(207, 207, 207);
     border-radius: 5px;

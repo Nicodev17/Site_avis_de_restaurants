@@ -40,7 +40,7 @@ class Application {
       this.filteredArray = filtreNote;
       console.log(this.filteredArray);
 
-      // Vidage de la liste précédente
+      // maj de la liste
       $('#zoneListe ul').empty();
 
       // On relance la fonction initResto avec les resto filtrés
@@ -102,11 +102,13 @@ class Application {
       // });
 
       // ---- Affichage dans la liste de droite ----
-      $('#zoneListe ul').append('<li class="listItem">' + '<h4>' + item.name + '</h4>'
-      + '<p class="restoAdress">' + item.address + '</p>'
-      + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</li>');
-      
-      //console.log(item.getRatings().length);
+      function test() {
+        $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + item.name + '</h4>'
+        + '<p class="restoAdress">' + item.address + '</p>'
+        + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</div>'
+        + '<div class="photoBox">' + '<img src="' + item.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
+      }
+      test();
 
       // Catch de chaque item de liste
       let listItem = $('#zoneListe li:eq(' + i + ')');

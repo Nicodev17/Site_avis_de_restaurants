@@ -22,7 +22,7 @@
             <img id="logo" src="media/logo_pasta.png" alt="logo pizza">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS ! 👌</h2>
+        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
     </header>
     
     <!-- Fenetre pop up -->
@@ -72,12 +72,16 @@
     </div>
 
     <!-- zone de filtrage -->
-    <div class="zoneFiltrage">
-        <p> Filtrer les restaurants : </p>
+
+    <div id="zoneInfo">
+        <p id="textInfo">Cliquez sur la carte pour ajouter un nouveau restaurant 👇</p>
         
         <div id="zoneRange">
-            <input type="text" readonly="readonly" id="note">
-            <div id="slider-range"> </div>
+            <p> Filtrer les restaurants : </p>
+            <div id="contentRange"> 
+                <input type="text" readonly="readonly" id="note">
+                <div id="slider-range"> </div>
+            </div>
         </div>
     </div>
 
@@ -94,7 +98,7 @@
     </div>
 
     <div id="footer">
-        <p> Site développé dans le cadre d'une formation OpenClassrooms &copy;</p>
+        <p> Site développé par Nicolas Sartelet dans le cadre d'une formation OpenClassrooms &copy;</p>
     </div>
     
     <!-- <script src="config.js"></script> -->

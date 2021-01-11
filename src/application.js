@@ -62,13 +62,13 @@ class Application {
     // Resultat de la requete
     let result = restaurants;
 
-    let arrayRestoLoc = [];
+    let arrayRestoLocal = [];
     // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
     result.forEach(element => {
       const restaurant = new Restaurant(element.restaurantName, element.address, element.lat, element.lon, element.ratings);
-      arrayRestoLoc.push(restaurant)
+      arrayRestoLocal.push(restaurant)
     });
-    this.arrayRestaurants = arrayRestoLoc;
+    this.arrayRestaurants = arrayRestoLocal;
   } // Fin fonction getResto
 
   /*----------------------------------------------------------------------
@@ -78,16 +78,17 @@ class Application {
     let mapClass = this.mapClass;
     await this.mapClass.load(zoneMap);
     await this.mapClass.geoloc();
+    await this.mapClass.mapClick();
     await this.getResto();
-    let arrayRestaurants = arrayResto;
+    this.arrayRestaurants = arrayResto;
     let isPopup = false;
 
     // Tableau contenant tous les objets restaurant
-    console.table(arrayRestaurants);
+    console.table(this.arrayRestaurants);
 
     // ---- Pour chaque objet restaurant ----
-    for (let i = 0; i < arrayRestaurants.length; i++) {
-      let item = arrayRestaurants[i];
+    for (let i = 0; i < this.arrayRestaurants.length; i++) {
+      let item = this.arrayRestaurants[i];
 
       // ---- Création d'un marqueur perso ----
       let idMarker = i;
@@ -212,8 +213,6 @@ class Application {
             $('#formulaire').get(0).reset();
             $('#formAvis').off();
 
-            console.table(arrayRestaurants);
-
             // Suppression de com 
             $('#dots').click(function () {
               let dotsClicked = true;
@@ -233,7 +232,6 @@ class Application {
                 dotsClicked = false;
               }
             });
-
           });
 
           // Annulation de l'envoi de com

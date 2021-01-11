@@ -120,13 +120,36 @@ class GoogleMap {
         let marker = new this.restoMarker(coord, this.map, id, iconSrc);
         return marker;
     }
-} // fin class GoogleMap
 
 /*----------------------------------------------------------------------
---------------------|| Fonction d'initialisation ||---------------------
+-------------|| Fonction de détection du clic sur la map ||-------------
 ----------------------------------------------------------------------*/
-const initMap = async function() {
-    const mapClass = new GoogleMap();
-    await mapClass.load(this.zoneMap);
-    await mapClass.geoloc();
-}
+async mapClick() {
+    
+    this.map.addListener("click", (e) => {
+
+        let latClick = e.latLng.lat();
+        let longClick = e.latLng.lng();
+
+        let restoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter');
+
+        const restoAdded = new Restaurant(restoName, 'adresse ici', latClick, longClick);
+
+        console.log(restoAdded);
+
+        // /*recuperer le tableau des resto ici */.push(restoAdded);
+
+        // Création du marqueur
+        this.addMarker(500, latClick, longClick, 'media/icon_marker.png');
+        // Centrage de la map sur le nouveau marqueur
+        //this.map.panTo(e.latLng);
+
+        // Actualisation du tableau des resto
+        
+
+    });
+
+} // Fin fonction mapClick
+
+} // Fin class GoogleMap
+

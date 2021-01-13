@@ -78,7 +78,8 @@ class Application {
     let mapClass = this.mapClass;
     await this.mapClass.load(zoneMap);
     await this.mapClass.geoloc();
-    await this.mapClass.mapClick();
+    // Fonction clic sur la map (ajout de resto)
+    await this.mapClick();
     await this.getResto();
     this.arrayRestaurants = arrayResto;
     let isPopup = false;
@@ -93,13 +94,12 @@ class Application {
       // ---- Création d'un marqueur perso ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
-      //console.log(marker.id);
 
-      // // Marqueurs de base (en arrière plan)
+      // Marqueurs de base (en arrière plan)
       // let markerBack = new google.maps.Marker({
-      //   position: {lat: item.lat, lng: item.lon },
+      //   position: {lat: item.position.lat, lng: item.position.lon },
       //   map: this.mapClass.map,
-      //   opacity: 1,
+      //   opacity: 0,
       // });
 
       // ---- Affichage dans la liste de droite ----
@@ -259,5 +259,40 @@ class Application {
     } // Fin boucle for
 
   } // Fin fonction initResto
+
+/*----------------------------------------------------------------------
+-------------|| Fonction de détection du clic sur la map ||-------------
+----------------------------------------------------------------------*/
+async mapClick() {
+  let mapClass = this.mapClass;
+  let latClick;
+  let longClick;
+
+  const adressRequest = await fetch(`http://maps.googleapis.com/maps/api/geocode/json?location=${latClick},${longClick}`)
+      .then(resultat => resultat.json())
+      .then(json => json)
+      let newRestoAdress = adressRequest;
+      console.log(newRestoAdress);
+    
+  mapClass.map.addListener("rightclick", (e) => {
+
+      latClick = e.latLng.lat();
+      longClick = e.latLng.lng();
+
+      const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
+
+      const restoAdded = new Restaurant(newRestoName, newRestoAdress, latClick, longClick);
+      console.log(restoAdded);
+
+      this.arrayRestaurants.push(restoAdded);
+      console.log(this.arrayRestaurants);
+
+      // Création du marqueur
+      mapClass.addMarker(500, latClick, longClick, 'media/icon_marker_added.png');
+      // Centrage de la map sur le nouveau marqueur
+      //this.map.panTo(e.latLng);
+  });
+
+} // Fin fonction mapClick
 
 } // Fin classe Application

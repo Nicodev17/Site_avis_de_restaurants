@@ -3,12 +3,11 @@
 ----------------------------------------------------------------------*/
 
 class GoogleMap {
-    constructor() {
+    constructor(lat, lon) {
         this.zoneMap = document.querySelector('#zoneMap');
         this.map = null;
         this.userPosition = null;
         this.restoMarker = null;
-        //this.arrayMarkers = [];
     }
 
     /**
@@ -70,7 +69,7 @@ class GoogleMap {
                 
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
-                    zoom: 13.5,
+                    zoom: 14,
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
@@ -121,35 +120,38 @@ class GoogleMap {
         return marker;
     }
 
-/*----------------------------------------------------------------------
--------------|| Fonction de détection du clic sur la map ||-------------
-----------------------------------------------------------------------*/
-async mapClick() {
+// /*----------------------------------------------------------------------
+// -------------|| Fonction de détection du clic sur la map ||-------------
+// ----------------------------------------------------------------------*/
+// async mapClick() {
     
-    this.map.addListener("click", (e) => {
+//     this.map.addListener("rightclick", (e) => {
 
-        let latClick = e.latLng.lat();
-        let longClick = e.latLng.lng();
+//         let latClick = e.latLng.lat();
+//         let longClick = e.latLng.lng();
 
-        let restoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter');
+//         let positionClicked = {
+//             latClick,
+//             longClick
+//         };
 
-        const restoAdded = new Restaurant(restoName, 'adresse ici', latClick, longClick);
+//         console.log(positionClicked);
 
-        console.log(restoAdded);
+//         let restoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
 
-        // /*recuperer le tableau des resto ici */.push(restoAdded);
+//         const restoAdded = new Restaurant(restoName, 'adresse ici', latClick, longClick);
 
-        // Création du marqueur
-        this.addMarker(500, latClick, longClick, 'media/icon_marker.png');
-        // Centrage de la map sur le nouveau marqueur
-        //this.map.panTo(e.latLng);
+//         console.log(restoAdded);
 
-        // Actualisation du tableau des resto
-        
+//         // /*recuperer le tableau des resto ici */.push(restoAdded);
 
-    });
+//         // Création du marqueur
+//         this.addMarker(500, latClick, longClick, 'media/icon_marker.png');
+//         // Centrage de la map sur le nouveau marqueur
+//         //this.map.panTo(e.latLng);
+//     });
 
-} // Fin fonction mapClick
+// } // Fin fonction mapClick
 
 } // Fin class GoogleMap
 

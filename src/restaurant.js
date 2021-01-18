@@ -1,5 +1,6 @@
 class Restaurant {
-    constructor(name, address, lat, lon, ratings) {
+    constructor(id, name, address, lat, lon, ratings) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.position = {
@@ -13,12 +14,16 @@ class Restaurant {
     calculAverage(){
         let total = 0;
 
+        if(this.ratings.length === 0) {
+            return " - ";
+        }
+
         this.ratings.forEach(element => {
             total += element.stars;
         });
         let result = total / this.ratings.length;
         result = Math.round(result * 10) / 10;
-        return result
+        return result;
     }
 
     // Méthode pour récupérer les commentaires
@@ -51,8 +56,32 @@ class Restaurant {
         console.log(this.ratings);
     }
 
-    // Méthode pour ajouter un nouveau resto
-    addResto(position){
+    // Méthode pour afficher les restaurants dans la liste de droite
+    displayRestoList(item) {
+        let restaurant = item;
+        
+        $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + restaurant.name + '</h4>'
+        + '<p class="restoAdress">' + restaurant.address + '</p>'
+        + '<p class="restoNote">' + restaurant.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restaurant.getRatings().length + ' avis)' + '</p>' + '</div>'
+        + '<div class="photoBox">' + '<img src="' + restaurant.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
+      }
 
-    }
+      // Comportement des marqueurs au survol d'un item de la liste
+      // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **
+
+      markerEvent(item, marker, listItem) {
+        let text = item.name;
+        $(document).ready(function () {
+          listItem.hover(
+            function () {
+              marker.activated();
+              $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
+            },
+            function () {
+              $('#infoBulle').remove();
+              marker.desactivated();
+            }
+          );
+        });
+      }
 }

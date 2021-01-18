@@ -64,8 +64,8 @@ class Application {
 
     let arrayRestoLocal = [];
     // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
-    result.forEach(element => {
-      const restaurant = new Restaurant(element.restaurantName, element.address, element.lat, element.lon, element.ratings);
+    result.forEach((element, index) => {
+      const restaurant = new Restaurant(index, element.restaurantName, element.address, element.lat, element.lon, element.ratings);
       arrayRestoLocal.push(restaurant)
     });
     this.arrayRestaurants = arrayRestoLocal;
@@ -78,18 +78,17 @@ class Application {
     let mapClass = this.mapClass;
     await this.mapClass.load(zoneMap);
     await this.mapClass.geoloc();
-    // Fonction clic sur la map (ajout de resto)
-    await this.mapClick();
     await this.getResto();
-    this.arrayRestaurants = arrayResto;
-    let isPopup = false;
+    // Fonction d'ajout de resto
+    await this.addResto();
+    // let isPopup = false;
 
     // Tableau contenant tous les objets restaurant
-    console.table(this.arrayRestaurants);
+    console.table(arrayResto);
 
     // ---- Pour chaque objet restaurant ----
-    for (let i = 0; i < this.arrayRestaurants.length; i++) {
-      let item = this.arrayRestaurants[i];
+    for (let i = 0; i < arrayResto.length; i++) {
+      let item = arrayResto[i];
 
       // ---- Création d'un marqueur perso ----
       let idMarker = i;
@@ -103,33 +102,15 @@ class Application {
       // });
 
       // ---- Affichage dans la liste de droite ----
-      function test() {
-        $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + item.name + '</h4>'
-        + '<p class="restoAdress">' + item.address + '</p>'
-        + '<p class="restoNote">' + item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)' + '</p>' + '</div>'
-        + '<div class="photoBox">' + '<img src="' + item.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
-      }
-      test();
+      item.displayRestoList(item);
 
       // Catch de chaque item de liste
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
-      // ---- Comportement des marqueurs au survol d'un item de la liste ----
-      let text = item.name;
-      $(document).ready(function () {
-        listItem.hover(
-          function () {
-            marker.activated();
-            $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
-          },
-          function () {
-            $('#infoBulle').remove();
-            marker.desactivated();
-          }
-        );
-      });
+      // Appel de la fonction du comportement des marqueurs au survol d'un item de liste
+      item.markerEvent(item, marker, listItem);
 
-      //---- Comportement d'un marqueur à son survol ----
+      //---- Comportement d'un marqueur à son survol direct ----
       // $(document).ready(function event() {
       //   $('.marker').hover(function() {
       //     marker.onSurvol();
@@ -140,7 +121,10 @@ class Application {
       // });
 
       // ---- Pop up fenêtre info lors du clic sur un item de la liste ----
-      $('#zoneListe li:eq(' + i + ')').click(function () {
+      $('#zoneListe li:eq(' + i + ')').click(() => {
+
+        // ***** APPEL ICI DE LA FONCTION EXTERNE (comme markerEvent) ! *****
+
         // Modification de la variable
         //isPopup = true;
 
@@ -162,7 +146,7 @@ class Application {
         displayInfo();
 
         // Fermeture fenetre info
-        $('#buttonClose').click(function () {
+        $('#buttonClose').click(() => {
           //isPopup = false;
           $('#overlay').css('display', 'none');
           $('.ratingItem').remove();
@@ -177,7 +161,7 @@ class Application {
         });
 
         /* ---- AJOUT D'AVIS ---- */
-        $('#buttonAddAvis').click(function () {
+        $('#buttonAddAvis').click(() => {
 
           // -- Affichage du formulaire --
           $('#formAvis').slideDown(800);
@@ -189,7 +173,7 @@ class Application {
           $('#buttonAddAvis').css('display', 'none');
 
           // Soumission du formulaire
-          $('#formAvis').submit(function (e) {
+          $('#formAvis').submit((e) => {
             e.preventDefault();
             let noteEnter = document.forms["formAvis"]["note"].value;
             let commentEnter = document.forms["formAvis"]["commentaire"].value;
@@ -198,6 +182,12 @@ class Application {
           
             // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
             item.addRating(Number(noteEnter), commentEnter);
+
+            let restaurant = this.arrayRestaurants.find(elt => elt.id === item.id);
+
+            restaurant.addRating(Number(noteEnter), commentEnter);
+            console.table(this.arrayRestaurants);
+
             // Rafraichissement de l'affichage
             $('.ratingItem').remove();
             displayInfo();
@@ -245,7 +235,7 @@ class Application {
         
       });
 
-      // // Fermeture de la fenetre lors du clic à l'extérieur (bug)
+      // Fermeture de la fenetre lors du clic à l'extérieur (bug)
       // if(isPopup === true) {
       //   console.log('la fenetre pop up s\'ouvre');
 
@@ -256,43 +246,54 @@ class Application {
       //     } 
       //   });
       // }
+
     } // Fin boucle for
 
   } // Fin fonction initResto
 
 /*----------------------------------------------------------------------
--------------|| Fonction de détection du clic sur la map ||-------------
+-------------------|| Fonction d'ajout de restaurants ||----------------
 ----------------------------------------------------------------------*/
-async mapClick() {
+async addResto() {
   let mapClass = this.mapClass;
-  let latClick;
-  let longClick;
+  
+  mapClass.map.addListener("rightclick", async (e) => {
 
-  const adressRequest = await fetch(`http://maps.googleapis.com/maps/api/geocode/json?location=${latClick},${longClick}`)
-      .then(resultat => resultat.json())
-      .then(json => json)
-      let newRestoAdress = adressRequest;
-      console.log(newRestoAdress);
+    let latClick = e.latLng.lat();
+    let longClick = e.latLng.lng();
+
+    // Requete pour obtenir l'adresse à partir de la position
+    const adressRequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latClick},${longClick}&key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k`)
+        .then(resultat => resultat.json())
+        .then(json => json)
+    const newRestoAdress = adressRequest.results[0].formatted_address;
+
+    // Formulaire
+    const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
+
+    // Création du nouvel objet restaurant
+    const restoAdded = new Restaurant(40, newRestoName, newRestoAdress, latClick, longClick, []);
+    console.log(restoAdded);
+
+    // Ajout au tableau des restaurants
+    this.arrayRestaurants.push(restoAdded);
+    console.log(this.arrayRestaurants);
+
+    // Création du marqueur
+    let marker = mapClass.addMarker(500, latClick, longClick, 'media/icon_marker_added.png');
+
+    // Ajout dans la liste
+    restoAdded.displayRestoList(restoAdded);
+
+    // On relance la fonction du comportement des marqueurs au survol
+    let listItem = $('#zoneListe li:last-child');
+    restoAdded.markerEvent(restoAdded, marker, listItem);
+
+    // Centrage de la map sur le nouveau marqueur (?)
+    // this.map.panTo(e.latLng);
     
-  mapClass.map.addListener("rightclick", (e) => {
-
-      latClick = e.latLng.lat();
-      longClick = e.latLng.lng();
-
-      const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
-
-      const restoAdded = new Restaurant(newRestoName, newRestoAdress, latClick, longClick);
-      console.log(restoAdded);
-
-      this.arrayRestaurants.push(restoAdded);
-      console.log(this.arrayRestaurants);
-
-      // Création du marqueur
-      mapClass.addMarker(500, latClick, longClick, 'media/icon_marker_added.png');
-      // Centrage de la map sur le nouveau marqueur
-      //this.map.panTo(e.latLng);
   });
 
-} // Fin fonction mapClick
+} // Fin fonction addResto
 
 } // Fin classe Application

@@ -104,10 +104,10 @@ class Application {
       // ---- Affichage dans la liste de droite ----
       item.displayRestoList(item);
 
-      // Catch de chaque item de liste
+      // Catch de chaque item de liste présents
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
-      // Appel de la fonction du comportement des marqueurs au survol d'un item de liste
+      // Appel de la fonction du comportement des marqueurs au survol d'un item de la liste
       item.markerEvent(item, marker, listItem);
 
       //---- Comportement d'un marqueur à son survol direct ----
@@ -120,119 +120,18 @@ class Application {
       //     });
       // });
 
-      // ---- Pop up fenêtre info lors du clic sur un item de la liste ----
-      $('#zoneListe li:eq(' + i + ')').click(() => {
+      // ******************************** REFACTORING : CHECK ********************************
 
-        // ***** APPEL ICI DE LA FONCTION EXTERNE (comme markerEvent) ! *****
-
-        // Modification de la variable
+      // ---- POP UP FENETRE INFOS ----
+      listItem.click(() => {
         //isPopup = true;
 
-        // Affichage du contenu
-        $('#overlay').css('display', 'flex');
-        // Injection des infos
-        function displayInfo() {
-          $('h3').html(item.name);
-          $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
-          $('#adresseResto p').html(item.address);
-          $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
-          $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
-          // Récupération des avis
-          item.getRatings().forEach(element => {
-            $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>' 
-            + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
-          });
-        }
-        displayInfo();
+        // Appel de la fonction de gestion du popup
+        this.displayInfoPop(item);
 
-        // Fermeture fenetre info
-        $('#buttonClose').click(() => {
-          //isPopup = false;
-          $('#overlay').css('display', 'none');
-          $('.ratingItem').remove();
-          $('#formAvis').css('display', 'none');
-
-          // Réinitialisation du bouton d'ajout de com
-          $('#buttonAddAvis').css('display', 'block');
-          // Réinitialisation du formulaire
-          $('#formulaire').get(0).reset();
-          $('#buttonClose').off();
-          $('#buttonAddAvis').off();
-        });
-
-        /* ---- AJOUT D'AVIS ---- */
-        $('#buttonAddAvis').click(() => {
-
-          // -- Affichage du formulaire --
-          $('#formAvis').slideDown(800);
-          // Scroll auto en bas de la fenetre
-          $('#infoResto').stop().animate({
-            scrollTop: $('#infoResto')[0].scrollHeight
-          }, 800);
-          $('#formAvis').css('display', 'block');
-          $('#buttonAddAvis').css('display', 'none');
-
-          // Soumission du formulaire
-          $('#formAvis').submit((e) => {
-            e.preventDefault();
-            let noteEnter = document.forms["formAvis"]["note"].value;
-            let commentEnter = document.forms["formAvis"]["commentaire"].value;
-            
-            alert('Votre commentaire a été envoyé !');
-          
-            // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
-            item.addRating(Number(noteEnter), commentEnter);
-
-            let restaurant = this.arrayRestaurants.find(elt => elt.id === item.id);
-
-            restaurant.addRating(Number(noteEnter), commentEnter);
-            console.table(this.arrayRestaurants);
-
-            // Rafraichissement de l'affichage
-            $('.ratingItem').remove();
-            displayInfo();
-            $('#dots').addClass('fa fa-ellipsis-v');
-            // Maj du nb d'avis et de la note dans la liste de droite
-            $('.restoNote:eq(' + i + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
-
-            // Disparition du formulaire
-            $('#formAvis').slideUp(600);
-            // Réaffichage du bouton d'ajout
-            $('#buttonAddAvis').css('display', 'block');
-            // Réinitialisation du formulaire
-            $('#formulaire').get(0).reset();
-            $('#formAvis').off();
-
-            // Suppression de com 
-            $('#dots').click(function () {
-              let dotsClicked = true;
-              $('#bulleSuppr').css('display', 'flex');
-              
-              $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
-              $('#buttonSuppr').click(function () {
-                console.log('suppression du com');
-              })
-
-              if (dotsClicked == true) {
-                $('#dots').click(function () {
-                  console.log('TEST');
-                  $('#bulleSuppr').css('display', 'none');
-                });
-                $('#dots').off();
-                dotsClicked = false;
-              }
-            });
-          });
-
-          // Annulation de l'envoi de com
-          $('#buttonCancel').click(function () {
-            $('#formAvis').slideUp(600);
-            $('#buttonAddAvis').css('display', 'block');
-            $('#formulaire').get(0).reset();
-            $('#formAvis').off();
-          });
-        }); // Fin de l'ajout d'avis
-        
+        // Appel de la fonction d'ajout d'avis (à externer)
+        let incrementNumber = i;
+        this.addingRate(item, incrementNumber);
       });
 
       // Fermeture de la fenetre lors du clic à l'extérieur (bug)
@@ -250,6 +149,121 @@ class Application {
     } // Fin boucle for
 
   } // Fin fonction initResto
+
+/*----------------------------------------------------------------------
+-------------------|| Fonction de gestion du pop up ||------------------
+----------------------------------------------------------------------*/
+displayInfoPop(item) {
+  // Apparition du popup
+  $('#overlay').css('display', 'flex');
+
+  // Affichage des infos dans le popup
+  $('h3').html(item.name);
+  $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
+  $('#adresseResto p').html(item.address);
+  $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
+  $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
+
+  // Récupération des avis
+  item.getRatings().forEach(element => {
+    $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>' 
+    + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>'); 
+  });
+
+  // Fermeture du popup
+  $('#buttonClose').click(() => {
+    //isPopup = false;
+    $('#overlay').css('display', 'none');
+    $('.ratingItem').remove();
+    $('#formAvis').css('display', 'none');
+
+    // Réinitialisation du bouton d'ajout de com
+    $('#buttonAddAvis').css('display', 'block');
+    // Réinitialisation du formulaire
+    $('#formulaire').get(0).reset();
+    $('#buttonClose').off();
+    $('#buttonAddAvis').off();
+  });
+}
+
+/*----------------------------------------------------------------------
+----------------------|| Fonction d'ajout d'avis ||---------------------
+----------------------------------------------------------------------*/
+addingRate(item, incrementNumber) {
+
+  $('#buttonAddAvis').click(() => {
+
+    // -- Affichage du formulaire --
+    $('#formAvis').slideDown(800);
+    // Scroll auto en bas de la fenetre
+    $('#infoResto').stop().animate({
+      scrollTop: $('#infoResto')[0].scrollHeight
+    }, 800);
+    $('#formAvis').css('display', 'block');
+    $('#buttonAddAvis').css('display', 'none');
+
+    // Soumission du formulaire
+    $('#formAvis').submit((e) => {
+      e.preventDefault();
+      let noteEnter = document.forms["formAvis"]["note"].value;
+      let commentEnter = document.forms["formAvis"]["commentaire"].value;
+      
+      alert('Votre commentaire a été envoyé !');
+    
+      // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
+      item.addRating(Number(noteEnter), commentEnter);
+
+      let restaurant = this.arrayRestaurants.find(elt => elt.id === item.id);
+
+      restaurant.addRating(Number(noteEnter), commentEnter);
+      console.table(this.arrayRestaurants);
+
+      // Rafraichissement de l'affichage
+      $('.ratingItem').remove();
+      this.displayInfoPop(item);
+      $('#dots').addClass('fa fa-ellipsis-v');
+      // Maj du nb d'avis et de la note dans la liste de droite
+      $('.restoNote:eq(' + incrementNumber + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
+
+      // Disparition du formulaire
+      $('#formAvis').slideUp(600);
+      // Réaffichage du bouton d'ajout
+      $('#buttonAddAvis').css('display', 'block');
+      // Réinitialisation du formulaire
+      $('#formulaire').get(0).reset();
+      $('#formAvis').off();
+
+      // Suppression de com 
+      $('#dots').click(function () {
+        let dotsClicked = true;
+        $('#bulleSuppr').css('display', 'flex');
+        
+        $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
+        $('#buttonSuppr').click(function () {
+          console.log('suppression du com');
+        })
+
+        if (dotsClicked == true) {
+          $('#dots').click(function () {
+            console.log('TEST');
+            $('#bulleSuppr').css('display', 'none');
+          });
+          $('#dots').off();
+          dotsClicked = false;
+        }
+      });
+    });
+
+    // Annulation de l'envoi de com
+    $('#buttonCancel').click(function () {
+      $('#formAvis').slideUp(600);
+      $('#buttonAddAvis').css('display', 'block');
+      $('#formulaire').get(0).reset();
+      $('#formAvis').off();
+    });
+  }); // Fin de l'ajout d'avis
+
+} // Fin fonction addingRate
 
 /*----------------------------------------------------------------------
 -------------------|| Fonction d'ajout de restaurants ||----------------
@@ -271,8 +285,17 @@ async addResto() {
     // Formulaire
     const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
 
+    let newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
+    while (!newRestoNote >= 0 && !newRestoNote <= 5 || newRestoNote != Number) {
+      alert('Note invalide ! Votre note doit se situer entre 0 et 5.');
+      newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
+      break;
+    };
+
+    const newRestoComment = prompt('Entrez le commentaire que vous souhaitez laisser sur ce restaurant', "Votre commentaire");
+
     // Création du nouvel objet restaurant
-    const restoAdded = new Restaurant(40, newRestoName, newRestoAdress, latClick, longClick, []);
+    const restoAdded = new Restaurant(40, newRestoName, newRestoAdress, latClick, longClick, [{stars: newRestoNote, comment: String(newRestoComment)}] );
     console.log(restoAdded);
 
     // Ajout au tableau des restaurants
@@ -288,6 +311,18 @@ async addResto() {
     // On relance la fonction du comportement des marqueurs au survol
     let listItem = $('#zoneListe li:last-child');
     restoAdded.markerEvent(restoAdded, marker, listItem);
+
+    // Au clic sur le nouvel item de liste
+    listItem.click(() => {
+      //isPopup = true;
+
+      // Fonction du pop up
+      this.displayInfoPop(restoAdded);
+      // Fonction d'ajout d'avis
+      this.addingRate(restoAdded);
+      // Maj du nb d'avis et de la note dans la liste de droite
+      $('#zoneListe li:last-child .restoNote').html(restoAdded.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restoAdded.getRatings().length + ' avis)');
+    });
 
     // Centrage de la map sur le nouveau marqueur (?)
     // this.map.panTo(e.latLng);

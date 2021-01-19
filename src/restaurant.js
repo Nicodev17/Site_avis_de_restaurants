@@ -16,14 +16,14 @@ class Restaurant {
 
         if(this.ratings.length === 0) {
             return " - ";
+        } else {
+            this.ratings.forEach(element => {
+                total += element.stars;
+            });
+            let result = total / this.ratings.length;
+            result = Math.round(result * 10) / 10;
+            return result;
         }
-
-        this.ratings.forEach(element => {
-            total += element.stars;
-        });
-        let result = total / this.ratings.length;
-        result = Math.round(result * 10) / 10;
-        return result;
     }
 
     // Méthode pour récupérer les commentaires
@@ -68,7 +68,6 @@ class Restaurant {
 
       // Comportement des marqueurs au survol d'un item de la liste
       // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **
-
       markerEvent(item, marker, listItem) {
         let text = item.name;
         $(document).ready(function () {

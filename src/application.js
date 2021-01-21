@@ -6,6 +6,7 @@ class Application {
     this.mapClass = new GoogleMap();
     this.arrayRestaurants;
     this.filteredArray;
+    this.arrayMarkers = [];
   }
 
   /*----------------------------------------------------------------------
@@ -81,7 +82,6 @@ class Application {
     await this.getResto();
     // Fonction d'ajout de resto
     await this.addResto();
-    // let isPopup = false;
 
     // Tableau contenant tous les objets restaurant
     console.table(arrayResto);
@@ -93,6 +93,7 @@ class Application {
       // ---- Création d'un marqueur perso ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
+      this.arrayMarkers.push(marker);
 
       // Marqueurs de base (en arrière plan)
       // let markerBack = new google.maps.Marker({
@@ -124,27 +125,13 @@ class Application {
 
       // ---- POP UP FENETRE INFOS ----
       listItem.click(() => {
-        //isPopup = true;
-
         // Appel de la fonction de gestion du popup
         this.displayInfoPop(item);
 
-        // Appel de la fonction d'ajout d'avis (à externer)
+        // Appel de la fonction d'ajout d'avis
         let incrementNumber = i;
         this.addingRate(item, incrementNumber);
       });
-
-      // Fermeture de la fenetre lors du clic à l'extérieur (bug)
-      // if(isPopup === true) {
-      //   console.log('la fenetre pop up s\'ouvre');
-
-      //   $(document).click(function(event) { 
-      //     if(!$(event.target).closest('#infoResto').length) {
-      //       //$('#overlay').css('display', 'none');
-      //       console.log('clic en dehors de la fenetre');
-      //     } 
-      //   });
-      // }
 
     } // Fin boucle for
 
@@ -156,6 +143,7 @@ class Application {
 displayInfoPop(item) {
   // Apparition du popup
   $('#overlay').css('display', 'flex');
+  let isPopup = true;
 
   // Affichage des infos dans le popup
   $('h3').html(item.name);
@@ -172,7 +160,8 @@ displayInfoPop(item) {
 
   // Fermeture du popup
   $('#buttonClose').click(() => {
-    //isPopup = false;
+    isPopup = false;
+
     $('#overlay').css('display', 'none');
     $('.ratingItem').remove();
     $('#formAvis').css('display', 'none');
@@ -184,7 +173,20 @@ displayInfoPop(item) {
     $('#buttonClose').off();
     $('#buttonAddAvis').off();
   });
-}
+
+  // Fermeture de la fenetre lors du clic à l'extérieur (bug)
+  // if(isPopup === true) {
+  //   console.log('la fenetre pop up s\'ouvre');
+
+  //   $(document).click((event) => { 
+  //     if(!$(event.target).closest('#infoResto').length) {
+  //       //$('#overlay').css('display', 'none');
+  //       console.log('clic en dehors de la fenetre');
+  //     } 
+  //   });
+  // }
+
+} // Fin fonction DisplayInfoPop
 
 /*----------------------------------------------------------------------
 ----------------------|| Fonction d'ajout d'avis ||---------------------
@@ -224,6 +226,7 @@ addingRate(item, incrementNumber) {
       $('#dots').addClass('fa fa-ellipsis-v');
       // Maj du nb d'avis et de la note dans la liste de droite
       $('.restoNote:eq(' + incrementNumber + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
+      
 
       // Disparition du formulaire
       $('#formAvis').slideUp(600);
@@ -270,11 +273,16 @@ addingRate(item, incrementNumber) {
 ----------------------------------------------------------------------*/
 async addResto() {
   let mapClass = this.mapClass;
+
+  // Prend le nombre de restos existants pour faire suivre l'id du new resto
+  let growId = this.arrayRestaurants.length;
+
+  //console.log(this.arrayMarkers);
   
   mapClass.map.addListener("rightclick", async (e) => {
-
     let latClick = e.latLng.lat();
     let longClick = e.latLng.lng();
+    growId++;
 
     // Requete pour obtenir l'adresse à partir de la position
     const adressRequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latClick},${longClick}&key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k`)
@@ -286,16 +294,15 @@ async addResto() {
     const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
 
     let newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
-    while (!newRestoNote >= 0 && !newRestoNote <= 5 || newRestoNote != Number) {
+    while (newRestoNote < 0 || newRestoNote > 5 || isNaN(newRestoNote) === true ) {
       alert('Note invalide ! Votre note doit se situer entre 0 et 5.');
       newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
-      break;
     };
 
     const newRestoComment = prompt('Entrez le commentaire que vous souhaitez laisser sur ce restaurant', "Votre commentaire");
 
     // Création du nouvel objet restaurant
-    const restoAdded = new Restaurant(40, newRestoName, newRestoAdress, latClick, longClick, [{stars: newRestoNote, comment: String(newRestoComment)}] );
+    const restoAdded = new Restaurant(growId, newRestoName, newRestoAdress, latClick, longClick, [{stars: newRestoNote, comment: String(newRestoComment)}] );
     console.log(restoAdded);
 
     // Ajout au tableau des restaurants
@@ -308,9 +315,15 @@ async addResto() {
     // Ajout dans la liste
     restoAdded.displayRestoList(restoAdded);
 
+    // Scroll auto en bas de la liste
+    $('#zoneListe ul')[0].scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+
     // On relance la fonction du comportement des marqueurs au survol
     let listItem = $('#zoneListe li:last-child');
     restoAdded.markerEvent(restoAdded, marker, listItem);
+
+    // Centrage de la map sur le nouveau marqueur (?)
+    // this.map.panTo(e.latLng);
 
     // Au clic sur le nouvel item de liste
     listItem.click(() => {
@@ -319,13 +332,10 @@ async addResto() {
       // Fonction du pop up
       this.displayInfoPop(restoAdded);
       // Fonction d'ajout d'avis
-      this.addingRate(restoAdded);
+      this.addingRate(restoAdded, growId);
       // Maj du nb d'avis et de la note dans la liste de droite
-      $('#zoneListe li:last-child .restoNote').html(restoAdded.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restoAdded.getRatings().length + ' avis)');
+      $('#zoneListe li:nth-child(' + growId + ') .restoNote').html(restoAdded.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restoAdded.getRatings().length + ' avis)');
     });
-
-    // Centrage de la map sur le nouveau marqueur (?)
-    // this.map.panTo(e.latLng);
     
   });
 

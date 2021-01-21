@@ -42,7 +42,6 @@ class Restaurant {
         return url
     }
     
-    
     // Méthode pour ajouter un avis (note + com)
     addRating(stars, comment){
 
@@ -66,21 +65,21 @@ class Restaurant {
         + '<div class="photoBox">' + '<img src="' + restaurant.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
       }
 
-      // Comportement des marqueurs au survol d'un item de la liste
-      // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **
-      markerEvent(item, marker, listItem) {
-        let text = item.name;
-        $(document).ready(function () {
-          listItem.hover(
-            function () {
-              marker.activated();
-              $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
-            },
-            function () {
-              $('#infoBulle').remove();
-              marker.desactivated();
-            }
-          );
-        });
-      }
+    // Méthode du comportement des marqueurs au survol d'un item de liste
+    // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **
+    markerEvent(item, marker, listItem) {
+      let text = item.name;
+      $(document).ready(function () {
+        listItem.hover(
+          function () {
+            marker.activated();
+            $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
+          },
+          function () {
+            $('#infoBulle').remove();
+            marker.desactivated();
+          }
+        );
+      });
+    }
 }

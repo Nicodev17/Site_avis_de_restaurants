@@ -62,6 +62,14 @@ class Application {
     // Resultat de la requete
     let result = restaurants;
 
+    // Requete pour récupérer plus de restaurants (Places API)
+    // const placesRequest = await fetch('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&libraries=places')
+    // .then(resultat => resultat.json())
+    // .then(json => json)
+
+    // const newPlacesRequest = placesRequest.resultat;
+    // console.log(newPlacesRequest);
+
     let arrayRestoLocal = [];
     // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
     result.forEach((element, index) => {
@@ -102,7 +110,7 @@ class Application {
       // });
 
       // ---- Affichage dans la liste de droite ----
-      item.displayRestoList(item);
+      item.displayRestoList();
 
       // Catch de chaque item de liste présents
       let listItem = $('#zoneListe li:eq(' + i + ')');
@@ -267,15 +275,14 @@ class Application {
   async addResto() {
     let mapClass = this.mapClass;
 
-    // Prend le nombre de restos existants pour faire suivre l'id du new resto
-    let growId = this.arrayRestaurants.length;
-
     //console.log(this.arrayMarkers);
-
+    
     mapClass.map.addListener("rightclick", async (e) => {
       let latClick = e.latLng.lat();
       let longClick = e.latLng.lng();
-      growId++;
+      
+      // Prend le nombre de restos existants pour faire suivre l'id du new resto
+      let growId = this.arrayRestaurants.length;
 
       // Requete pour obtenir l'adresse à partir de la position
       const adressRequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latClick},${longClick}&key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k`)
@@ -307,7 +314,8 @@ class Application {
       let marker = mapClass.addMarker(500, latClick, longClick, 'media/icon_marker_added.png');
 
       // Ajout dans la liste
-      restoAdded.displayRestoList(restoAdded);
+      restoAdded.displayRestoList();
+
 
       // Scroll auto en bas de la liste
       $('#zoneListe ul')[0].scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
@@ -324,11 +332,8 @@ class Application {
         this.displayInfoPop(restoAdded);
         // Fonction d'ajout d'avis
         this.addingRate(restoAdded, growId);
-        // Maj du nb d'avis et de la note dans la liste de droite
       });
-      $('#buttonClose').click(() => {
-        $('#zoneListe li:nth-child(' + growId + ') .restoNote').html(restoAdded.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restoAdded.getRatings().length + ' avis)');
-      });
+      
     });
 
   } // Fin fonction addResto

@@ -54,13 +54,11 @@ class Restaurant {
     }
 
     // ---- Méthode pour afficher les restaurants dans la liste de droite ----
-    displayRestoList(item) {
-        let restaurant = item;
-        
-        $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + restaurant.name + '</h4>'
-        + '<p class="restoAdress">' + restaurant.address + '</p>'
-        + '<p class="restoNote">' + restaurant.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + restaurant.getRatings().length + ' avis)' + '</p>' + '</div>'
-        + '<div class="photoBox">' + '<img src="' + restaurant.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
+    displayRestoList() {
+        $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + this.name + '</h4>'
+        + '<p class="restoAdress">' + this.address + '</p>'
+        + '<p class="restoNote">' + this.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + this.getRatings().length + ' avis)' + '</p>' + '</div>'
+        + '<div class="photoBox">' + '<img src="' + this.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
       }
 
     // ---- Méthode du comportement des marqueurs au survol d'un item de liste ----
@@ -80,5 +78,5 @@ class Restaurant {
         );
       });
     }
-    
+
 } // Fin classe Restaurant

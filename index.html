@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,8 @@
     <title>Vicino Resto - Avis de restaurants près de chez vous</title>
     <link rel="icon" type="image/png" href="media/favicon_pasta.png"/>
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="style/jquery-ui.css">
     <script src="src/jquery-3.3.1.js"></script>
     <script src="src/jquery-ui.js"></script>
@@ -20,16 +22,66 @@
             <img id="logo" src="media/logo_pasta.png" alt="logo pizza">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS ! 👌</h2>
+        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
     </header>
+    
+    <!-- Fenetre pop up -->
+    <div id="overlay">
+        <div id="infoResto">
+            
+            <div id="closeBox">
+                <buton id="buttonClose" title="Fermer la fenêtre"> <img src="media/icon_close.png"> </buton>
+            </div>
+
+            <h3> Nom resto </h3>
+
+            <div id="photoResto"> </div>
+
+            <div id="adresseResto">
+                <p> Adresse : XXXX </p>
+            </div>
+
+            <div id="noteMoyenne">
+                <p> Note moyenne : X/5 </p>
+            </div>
+
+            <div id="zoneAvis">
+                <div id="contentZoneAvis">
+                    <p id="titleAvis"> Avis sur ce restaurant : </p>
+
+                    <div id="formAvis" >
+                        <form method="post" action="src/application.js" name="formAvis" id="formulaire">
+                            <label for="note"> Votre note : </label>
+                            <input required type="number" min="0" max="5" name="note" id="addNote" value="" placeholder="0">
+                            <br>
+                            <textarea required name="commentaire" id="addCommentaire" value="" placeholder="Votre commentaire"></textarea>
+                            <br>
+                            <input type="submit" value="Envoyer" id="buttonSend">
+                            <input type="button" value="Annuler" id="buttonCancel">
+                        </form>
+                    </div>
+
+                    <div id="buttonAvisBox"> 
+                        <button id="buttonAddAvis"> Ajouter un avis </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
 
     <!-- zone de filtrage -->
-    <div class="zoneFiltrage">
-        <h3> Filtrer les restaurants : </h3>
+
+    <div id="zoneInfo">
+        <p id="textInfo">Faites un clic-droit sur la carte pour ajouter un nouveau restaurant 👇</p>
         
         <div id="zoneRange">
-            <input type="text" readonly="readonly" id="note">
-            <div id="slider-range"> </div>
+            <p> Filtrer les restaurants : </p>
+            <div id="contentRange"> 
+                <input type="text" readonly="readonly" id="note">
+                <div id="slider-range"> </div>
+            </div>
         </div>
     </div>
 
@@ -37,21 +89,16 @@
         <div id="zoneMap">
             <!-- map affichée ici -->
         </div>
-
-        <div class="zoneListe">
-            <ul>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
+        
+        <div id="zoneListe">
+            <ul> 
+                <!-- liste des resto affichée ici --> 
             </ul>
         </div>
+    </div>
+
+    <div id="footer">
+        <p> Site développé par Nicolas Sartelet dans le cadre d'une formation OpenClassrooms &copy;</p>
     </div>
     
     <!-- <script src="config.js"></script> -->

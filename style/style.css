@@ -1,8 +1,13 @@
 /* ---- CORPS DE LA PAGE ---- */
+html {
+    height: 100%;
+}
+
 body {
-    width: 100%;
-    height: auto;
+    min-height: 100%;
     margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 /* ---- BARRE DU HEADER ---- */
@@ -44,24 +49,38 @@ h2 {
 
 /* ---- ZONE DU FILTRAGE ---- */
 
-.zoneFiltrage {
+#zoneInfo {
     height: 80px;
+    background: #eeeeee;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    margin-left: 50px;
+    justify-content: space-between;
+    padding-left: 50px;
 }
 
-h3 {
+#zoneRange p {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(88, 88, 88);
     font-size: 1em;
+    font-weight: bold;
     margin-right: 25px;
     margin-bottom: 15px;
 }
 
+#textInfo {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(88, 88, 88);
+    font-size: 1em;
+    font-weight: bold;
+}
+
 #zoneRange {
+    display: flex;
+    flex-direction: row;
+}
+
+#contentRange {
     display: flex;
     flex-direction: column;
     width: 150px;
@@ -73,7 +92,8 @@ h3 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.88em;
     font-weight: bold;
-    color: #e64f2a; 
+    color: #e64f2a;
+    background-color: #eeeeee;
     margin-bottom: 10px;
     border: 0;
     outline-style : none;
@@ -84,6 +104,8 @@ h3 {
 .affichage {
     display: flex;
     flex-direction: row;
+    border-top: 4px solid rgb(182, 182, 182);
+    border-bottom: 4px solid rgb(182, 182, 182);
 }
 
 /* ---- ZONE DE LA MAP ---- */
@@ -91,52 +113,436 @@ h3 {
 #zoneMap {
     width: 65%;
     height: 600px;
-    border: 5px solid rgb(160, 160, 160);
 }
 
-/* ---- ZONE DES AVIS ---- */
+/* ---- ZONE DE LA LISTE ---- */
 
-.zoneListe {
+#zoneListe {
     width: 35%;
     height: 600px;
-    border: 5px solid rgb(94, 94, 94);
     overflow-y: scroll;
+    border-left: 2px solid rgb(182, 182, 182);
 }
 
-.zoneListe li {
+#zoneListe li {
     height: 130px;
-    border: 3px solid rgb(151, 151, 151);
+    border: 4px solid #e4e4e4;
+    border-radius: 6px;
     margin-top: 20px;
     margin-left: -20px;
     margin-right: 10px;
     list-style: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    background-color: #eeeeeec2;
+}
+
+#zoneListe li:hover {
+    /* box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box; */
+    border-color:  rgba(207, 207, 207, 0.918);
+    background-color: #ebe8e8;
+}
+
+/* Nom du resto */
+.contentItem {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 10px;
+    margin-top: -10px;
 }
 
 h4 {
     font-family: Arial, Helvetica, sans-serif;
-    color: #be444a;
-    font-size: 1em;
-    margin-top: 4px;
-    margin-left: 7px;
+    color: #e64f2a;
+    font-size: 1.18em;
+    margin-bottom: 0px;
 }
 
 .restoAdress {
     font-family: Arial, Helvetica, sans-serif;
-    color: rgb(66, 66, 66);
-    font-size: 0.9em;
-    margin-left: 7px;
+    color: rgb(88, 88, 88);
+    font-size: 0.91em;
+    text-align: right;
+    margin-top: 20px;
 }
 
 .restoNote {
-    font-family: Arial, Helvetica, sans-serif;
-    color: rgb(177, 70, 21);
-    font-size: 0.9em;
-    margin-left: 7px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #e64f2a;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: -5px;
 }
 
-.restoComment {
+/* Petite étoile */
+strong {
+    color: #fbb03b;
+    font-size: 1.2em;
+}
+
+/* Photo du resto dans la liste */
+.photoBox {
+    width: 30%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.photoList {
+    width: 100%;
+    height: auto;
+    border: 4px solid rgb(207, 207, 207);
+    border-radius: 5px;
+}
+
+/* ---- OVERLAY POP UP INFO RESTO ---- */
+
+#overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(133, 133, 133, 0.562);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 300;
+    display: none;
+}
+
+/* Fenetre info */
+#infoResto {
+    width: 40%;
+    height: 490px;
+    margin-bottom: 100px;
+    background-color: #ffffff;
+    border: 4px solid rgb(207, 207, 207);
+    overflow-y: scroll;
     font-family: Arial, Helvetica, sans-serif;
-    color: rgb(66, 66, 66);
+}
+
+/* Bouton fermeture */
+#closeBox{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 15px;
+    margin-right: 15px;
+}
+
+#buttonClose{
+    cursor: pointer;
+    position: absolute;
+}
+
+#buttonClose img{
+    width: 20px;
+    height: auto;
+}
+
+#buttonClose img:hover {
+    filter: saturate(200%);
+    -webkit-filter: saturate(200%);
+}
+
+/* Titre dans la fenetre info (pop up) */
+h3 {
+    color: #e64f2a;
+    text-align: center;
+    margin-top: 0;
+    font-size: 25px;
+}
+
+/* Contenu dans la fenetre info */
+#photoResto {
+    text-align: center;
+}
+
+#photoResto img {
+    width: 65%;
+    height: auto;
+    border: 5px solid rgb(207, 207, 207);
+    border-radius: 5px;
+}
+
+#adresseResto p {
+    text-align: center;
+    color: #4b4b4b;
+    margin-top: 20px;
+    padding: 0 30px 0 30px;
+    
+}
+
+#noteMoyenne p {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #e64f2a;
+    margin-top: 30px;
+    padding: 0 30px 0 30px
+}
+
+#titleAvis {
+    font-size: 1em;
+    font-weight: bold;
+    color: #5a5a5a;
+}
+
+hr {
+    width: 80%;
+    margin-top: 20px;
+    border: 0; 
+    height: 1px; 
+    background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+    background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+}
+
+#zoneAvis {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 0 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#contentZoneAvis {
+    padding: 0 30px 0 60px;
+    width: 70%;
+}
+
+.ratingItem {
+    margin-top: 30px;
+}
+
+.ratingItem p {
+    font-size: 1em;
+    color: rgb(82, 82, 82);
+}
+
+.ratingItem p:nth-child(2) {
+    margin-top: 25px;
+    padding-right: 25px;
+}
+
+/* bouton de suppression de com */
+#dots {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: -17px;
+    color:rgb(194, 194, 194);
+    font-size: 0.9em;
+}
+
+#bulleSuppr {
+    display: flex;
+    background-color: #adadadc0;
+    height: 25px;
+    padding: 2px;
+    margin-right: 5px;
+    border-radius: 5px;
+    z-index: 15;
+}
+
+#buttonSuppr {
+    cursor: pointer;
+    border:none;
+    outline:none;
+    background-color: rgba(252, 252, 252, 0);
+    color: white;
+    font: Bold 13px Arial;
+}
+
+#buttonAvisBox {
+    display: flex;
+    justify-content: center;
+}
+
+#buttonAddAvis, #buttonSend, #buttonCancel {
+    margin-top: 15px;
+    padding: 6px 0 6px 0;
+	font: Bold 13px Arial;
+	color:#fff;
+	width: 130px;
+	border-radius: 4px;
+    border: none;
+    outline-style: none;
+}
+
+#buttonAddAvis {
+    background: #d34836;
+}
+
+#buttonSend {
+    background: #fbb03b;
+}
+
+#buttonCancel {
+    background-color: #c5c4c4;
+}
+
+#buttonSend:hover {
+    cursor: pointer;
+	background: #eba12b;
+    color:#fff;
+}
+
+#buttonAddAvis:hover  {
+    cursor: pointer;
+	background: #aa3728;
+    color:#fff;
+}
+
+#buttonCancel:hover  {
+    cursor: pointer;
+	background: #a5a5a5;
+}
+
+/* Formulaire d'ajout de commentaire */
+#formAvis {
+    margin: 25px 0 15px 0;
+    display: none;
+}
+
+#formAvis form {
+    padding-right: 15px;
+}
+
+#addNote {
+    width: 50px;
+    outline-style: none;
+}
+
+#addCommentaire {
+    width: 100%;
+    height: 60px;
+    margin-top: 20px;
+    outline-style: none;
+}
+
+label {
+    font-size: 1em;
+    font-weight: 600;
+    color: rgb(82, 82, 82);
+}
+
+#error {
+    color: #d34836;
     font-size: 0.85em;
-    margin-left: 7px;
+    display: none;
+}
+
+/* Media Queries Overlay Pop Up */
+
+/* TABLETTE */
+@media screen and (max-width: 70em) {
+
+    #infoResto {
+        width: 50%;
+    }
+}
+
+
+/* SMARTPHONE */
+@media screen and (max-width: 50em) {
+
+    #infoResto {
+        width: 70%;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    #buttonClose img{
+        width: 17px;
+        height: auto;
+    }
+
+    #closeBox {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+}
+
+/* ---- MARQUEURS DE LA MAP ---- */
+
+.marker {
+/* décalage pour que l'img du marqueur soit centrée sur le marqueur réel /!\ ces valeurs sont liées à la résolution de l'image utilisée */
+ margin-top: -60px; /* on retire la hauteur totale */ 
+ margin-left: -25px; /* on retire la moitié de la largeur (pour le centrer) */
+}
+
+.marker:hover {
+    cursor: pointer;
+    filter: saturate(500%);
+    -webkit-filter: saturate(500%);
+    z-index: 300;
+}
+
+/* .marker.is-onSurvol {
+    cursor: pointer;
+    filter: saturate(500%);
+    -webkit-filter: saturate(500%);
+    z-index: 300;
+} */
+
+.marker.is-active {
+/* image est grossie de 25% */
+-webkit-transform:scale(1.25); /* Safari et Chrome */
+-moz-transform:scale(1.25); /* Firefox */
+-ms-transform:scale(1.25); /* Internet Explorer 9 */
+-o-transform:scale(1.25); /* Opera */
+transform:scale(1.25);
+filter: saturate(500%);
+-webkit-filter: saturate(500%);
+z-index: 100;
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: -57px;
+margin-left: -55px;
+}
+
+#infoBulle {
+    width: 100px;
+    height: auto;
+    margin-top: 1px;
+    padding: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: rgba(75, 75, 75, 0.849);
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.733);
+    border-radius: 20px;
+    border: 3px solid #d1d1d1;
+}
+
+/* ---- FOOTER ---- */
+
+#footer{
+    position: relative;
+    width: 100%;
+    height: 70px;
+    background-color: #eeeeee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#footer p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(114, 114, 114);
 }

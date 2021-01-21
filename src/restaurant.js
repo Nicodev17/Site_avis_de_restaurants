@@ -10,7 +10,7 @@ class Restaurant {
         this.ratings = ratings;
     }
 
-    // Méthode pour calculer la moyenne des notes de tous les avis d'un resto
+    // ---- Méthode pour calculer la moyenne des notes de tous les avis d'un resto ----
     calculAverage(){
         let total = 0;
 
@@ -26,14 +26,14 @@ class Restaurant {
         }
     }
 
-    // Méthode pour récupérer les commentaires
+    // ---- Méthode pour récupérer les commentaires ----
     getRatings(){
         // Retourne un tableau avec tous les avis de chaque resto
         let avis = this.ratings;
         return avis;
     }    
 
-    // Méthode pour récupérer la photo StreetView du resto
+    // ---- Méthode pour récupérer la photo StreetView du resto ----
     getPhoto(){
         let lat = this.position.lat;
         let lon = this.position.lon;
@@ -42,20 +42,18 @@ class Restaurant {
         return url
     }
     
-    // Méthode pour ajouter un avis (note + com)
+    // ---- Méthode pour ajouter un avis (note + com) ----
     addRating(stars, comment){
-
         let rating = {
             stars: stars,
             comment: comment,
           };
         
         this.ratings.push(rating);
-
-        console.log(this.ratings);
+        //console.log(this.ratings);
     }
 
-    // Méthode pour afficher les restaurants dans la liste de droite
+    // ---- Méthode pour afficher les restaurants dans la liste de droite ----
     displayRestoList(item) {
         let restaurant = item;
         
@@ -65,7 +63,7 @@ class Restaurant {
         + '<div class="photoBox">' + '<img src="' + restaurant.getPhoto() + '" class="photoList">' + '</div>' + '</li>');
       }
 
-    // Méthode du comportement des marqueurs au survol d'un item de liste
+    // ---- Méthode du comportement des marqueurs au survol d'un item de liste ----
     // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **
     markerEvent(item, marker, listItem) {
       let text = item.name;
@@ -82,4 +80,5 @@ class Restaurant {
         );
       });
     }
-}
+    
+} // Fin classe Restaurant

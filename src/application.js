@@ -21,11 +21,11 @@ class Application {
       max: 5,
       values: [1, 5],
       slide: function (event, ui) {
-        $("#note").val("Note entre " + ui.values[0] + " et " + ui.values[1] + " ★");
+        $("#note").val("Note entre " + ui.values[0] + " & " + ui.values[1]);
       }
     });
     $("#note").val("Note entre " + $("#slider-range").slider("values", 0) +
-      " et " + $("#slider-range").slider("values", 1) + " ★");
+      " & " + $("#slider-range").slider("values", 1));
   }; // Fin fonction sliderInit
 
   /* ---- Récupération des valeurs du slider et filtrage ---- */
@@ -160,7 +160,7 @@ class Application {
     // Récupération des avis
     item.getRatings().forEach(element => {
       $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>'
-        + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
+        + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr id="separateCom"> </div>');
     });
 
     // Fermeture du popup
@@ -333,7 +333,7 @@ class Application {
         // Fonction d'ajout d'avis
         this.addingRate(restoAdded, growId);
       });
-      
+
     });
 
   } // Fin fonction addResto

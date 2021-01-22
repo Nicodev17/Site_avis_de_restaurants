@@ -49,6 +49,7 @@ h2 {
 
 /* ---- ZONE DU FILTRAGE ---- */
 
+/* Barre sous le header */
 #zoneInfo {
     height: 80px;
     background: #eeeeee;
@@ -59,6 +60,12 @@ h2 {
     padding-left: 50px;
 }
 
+/* Zone du filtrage */
+#zoneRange {
+    display: flex;
+    flex-direction: row;
+}
+
 #zoneRange p {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(88, 88, 88);
@@ -66,18 +73,6 @@ h2 {
     font-weight: bold;
     margin-right: 25px;
     margin-bottom: 15px;
-}
-
-#textInfo {
-    font-family: Arial, Helvetica, sans-serif;
-    color: rgb(88, 88, 88);
-    font-size: 1em;
-    font-weight: bold;
-}
-
-#zoneRange {
-    display: flex;
-    flex-direction: row;
 }
 
 #contentRange {
@@ -97,6 +92,32 @@ h2 {
     margin-bottom: 10px;
     border: 0;
     outline-style : none;
+}
+
+/* Zone info du clic sur la map */
+#zoneInfoClic{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#textInfo {
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(88, 88, 88);
+    font-size: 1em;
+    font-weight: bold;
+}
+
+bold {
+    color: #fc853a;
+    font-weight: 800;
+}
+
+#iconMouse {
+    width: 20px;
+    height: auto;
+    margin-left: 7px;
+    margin-right: 50px;
 }
 
 /* ---- ZONE D'AFFICHAGE DU CONTENU ---- */
@@ -251,15 +272,36 @@ strong {
     -webkit-filter: saturate(200%);
 }
 
-/* Titre dans la fenetre info (pop up) */
+/* Contenu dans la fenetre info (pop up)*/
+
+/* Titre */
 h3 {
     color: #e64f2a;
     text-align: center;
-    margin-top: 0;
-    font-size: 25px;
+    margin-top: 5px;
+    font-size: 27px;
 }
 
-/* Contenu dans la fenetre info */
+#separatePop {
+    width: 25%;
+    height: 5px;
+    background-color: #fbb13bd3;
+    border-color: rgba(255, 255, 255, 0);
+    border-radius: 50px;
+    margin-top: -12px;
+    margin-bottom: 15px;
+}
+
+#iconCook {
+    text-align: center;
+}
+
+#iconCook img {
+    width: 60px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
 #photoResto {
     text-align: center;
 }
@@ -294,7 +336,7 @@ h3 {
     color: #5a5a5a;
 }
 
-hr {
+#separateCom {
     width: 80%;
     margin-top: 20px;
     border: 0; 
@@ -531,7 +573,8 @@ margin-left: -55px;
 
 /* ---- FOOTER ---- */
 
-#footer{
+#footer {
+    margin-top: 50px;
     position: relative;
     width: 100%;
     height: 70px;

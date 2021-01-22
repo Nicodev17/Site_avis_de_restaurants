@@ -22,7 +22,7 @@
             <img id="logo" src="media/logo_pasta.png" alt="logo pizza">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
+        <h2>AVIS DE RESTAURANTS PRÈS DE CHEZ VOUS !</h2>
     </header>
     
     <!-- Fenetre pop up -->
@@ -34,6 +34,12 @@
             </div>
 
             <h3> Nom resto </h3>
+
+            <hr id="separatePop">
+            
+            <div id="iconCook">
+                <img src="media/cooking.png" alt="image de cuisto">
+            </div>
 
             <div id="photoResto"> </div>
 
@@ -74,10 +80,13 @@
     <!-- zone de filtrage -->
 
     <div id="zoneInfo">
-        <p id="textInfo">Faites un clic-droit sur la carte pour ajouter un nouveau restaurant 👇</p>
+        <div id="zoneInfoClic">
+            <p id="textInfo">Faites un <bold>clic-droit</bold> sur la carte pour ajouter un nouveau restaurant </p>
+            <img src="media/mouse.png" id="iconMouse" alt="icon mouse">
+        </div>
         
         <div id="zoneRange">
-            <p> Filtrer les restaurants : </p>
+            <p> <bold>Filtrez</bold> les restaurants : </p>
             <div id="contentRange"> 
                 <input type="text" readonly="readonly" id="note">
                 <div id="slider-range"> </div>

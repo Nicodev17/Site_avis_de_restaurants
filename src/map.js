@@ -17,13 +17,13 @@ class GoogleMap {
     async load(element) {
         return new Promise((resolve, reject) => {
             // Récupération de la map via l'api google maps
-            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k', () => {
+            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&libraries=places', () => {
                 
                 // Class et méthodes pour les marqueurs personnalisés
                 this.restoMarker = class RestoMarker extends google.maps.OverlayView {
                     constructor (pos, map, id, iconSrc) {
                         super()
-                        this.div = null
+                        this.div = document.createElement('div')
                         this.pos = pos
                         this.id = id
                         this.iconSrc = iconSrc
@@ -31,7 +31,6 @@ class GoogleMap {
                     }
                 
                     onAdd () {
-                        this.div = document.createElement('div')
                         this.div.classList.add('marker')
                         $(this.div).attr('id', `marker-${this.id}`)
                         this.div.style.position = 'absolute'
@@ -49,27 +48,50 @@ class GoogleMap {
                         this.div.parentNode.removeChild(this.div)
                     }
 
-                    activated() {
+                    activated(text) {
                         this.div.classList.add('is-active');
+                        $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
                     }
 
                     desactivated() {
                         this.div.classList.remove('is-active');
+                        $('#infoBulle').remove();
                     }
 
-                    // onSurvol() {
-                    //     this.div.classList.add('is-onSurvol');
-                    //     console.log('marqueur survolé');
-                    // }
+                    onClick(cb) {
+                        this.div.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            cb();
+                        });
+                    }
 
-                    // offSurvol() {
-                    //     this.div.classList.remove('is-onSurvol');
-                    // }
+                    onOffSurvol(text, cb) {
+                        $(this.div).hover(
+                            // Survol
+                            () => {
+                            this.activated(text);
+                            },
+                            // Départ
+                            () => {
+                                this.desactivated();
+                            }
+                        );
+
+                        // this.div.classList.add('is-onSurvol');
+                        // this.div.addEventListener('mouseover', (e)=> {
+                        //     e.preventDefault();
+                        //     e.stopPropagation();
+                        //     cb();
+                        //     console.log('Marker SURVOLÉ !');
+                        // });
+                    }
+
                 } // Fin class RestoMarker
                 
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
-                    zoom: 14,
+                    zoom: 15,
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
@@ -83,6 +105,7 @@ class GoogleMap {
                 });
                 resolve();
             });
+
         });
     } // fin fonction load
 

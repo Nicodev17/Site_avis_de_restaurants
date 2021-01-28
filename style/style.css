@@ -36,7 +36,7 @@ h1 {
     font-family: Arial, Helvetica, sans-serif;
     color: white;
     font-size: 1.4em;
-    margin-left: 20px;
+    margin-left: 5px;
     margin-right: 30px;
 }
 
@@ -109,7 +109,7 @@ h2 {
 }
 
 bold {
-    color: #fc853a;
+    color: #fc853a; /* Ou #f74049da */
     font-weight: 800;
 }
 
@@ -183,6 +183,7 @@ h4 {
     color: #e64f2a;
     font-size: 1.18em;
     margin-bottom: 0px;
+    text-align: right;
 }
 
 .restoAdress {
@@ -219,7 +220,7 @@ strong {
 
 .photoList {
     width: 100%;
-    height: auto;
+    height: 90px;
     border: 4px solid rgb(207, 207, 207);
     border-radius: 5px;
 }
@@ -242,7 +243,7 @@ strong {
 #infoResto {
     width: 40%;
     height: 490px;
-    margin-bottom: 100px;
+    margin-bottom: 180px;
     background-color: #ffffff;
     border: 4px solid rgb(207, 207, 207);
     overflow-y: scroll;
@@ -328,6 +329,15 @@ h3 {
     color: #e64f2a;
     margin-top: 30px;
     padding: 0 30px 0 30px
+}
+
+#iconRate {
+    text-align: center;
+}
+
+#iconRate img {
+    width: 60px;
+    height: auto;
 }
 
 #titleAvis {
@@ -478,12 +488,6 @@ label {
     color: rgb(82, 82, 82);
 }
 
-#error {
-    color: #d34836;
-    font-size: 0.85em;
-    display: none;
-}
-
 /* Media Queries Overlay Pop Up */
 
 /* TABLETTE */
@@ -491,6 +495,7 @@ label {
 
     #infoResto {
         width: 50%;
+        margin-bottom: 200px;
     }
 }
 
@@ -500,6 +505,7 @@ label {
 
     #infoResto {
         width: 70%;
+        margin-bottom: 230px;
     }
 
     h3 {
@@ -531,13 +537,6 @@ label {
     -webkit-filter: saturate(500%);
     z-index: 300;
 }
-
-/* .marker.is-onSurvol {
-    cursor: pointer;
-    filter: saturate(500%);
-    -webkit-filter: saturate(500%);
-    z-index: 300;
-} */
 
 .marker.is-active {
 /* image est grossie de 25% */

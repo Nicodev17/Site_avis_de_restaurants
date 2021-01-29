@@ -17,46 +17,49 @@ class GoogleMap {
     async load(element) {
         return new Promise((resolve, reject) => {
             // Récupération de la map via l'api google maps
-            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&libraries=places', () => {
+            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&map_ids=455789ea7a0a6e59&libraries=places', () => {
                 
                 // Class et méthodes pour les marqueurs personnalisés
                 this.restoMarker = class RestoMarker extends google.maps.OverlayView {
                     constructor (pos, map, id, iconSrc) {
-                        super()
-                        this.div = document.createElement('div')
-                        this.pos = pos
-                        this.id = id
-                        this.iconSrc = iconSrc
-                        this.setMap(map)
-                    }
+                        super();
+                        this.div = document.createElement('div');
+                        this.pos = pos;
+                        this.id = id;
+                        this.iconSrc = iconSrc;
+                        this.setMap(map);
+                    };
                 
                     onAdd () {
-                        this.div.classList.add('marker')
-                        $(this.div).attr('id', `marker-${this.id}`)
-                        this.div.style.position = 'absolute'
-                        this.div.innerHTML = '<img src="' + this.iconSrc + '"alt="image marker" />'
-                        this.getPanes().overlayImage.appendChild(this.div)
-                    }
+                        this.div.classList.add('marker');
+                        $(this.div).attr('id', `marker-${this.id}`);
+                        this.div.style.position = 'absolute';
+                        this.div.innerHTML = '<img class="imgMarker" src="' + this.iconSrc + '"alt="image marker" />';
+                        this.getPanes().overlayImage.appendChild(this.div);
+                        // Animation de l'apparition des marqueurs 
+                        $(this.div).css('opacity', '0').css('margin-top', '-100px');
+                        $(this.div).animate({opacity:'1', marginTop:'-60px'}, 700);                   
+                    };
                 
                     draw () {
-                        let position = this.getProjection().fromLatLngToDivPixel(this.pos)
-                        this.div.style.left = position.x + "px"
-                        this.div.style.top = position.y + "px"
-                    }
+                        let position = this.getProjection().fromLatLngToDivPixel(this.pos);
+                        this.div.style.left = position.x + "px";
+                        this.div.style.top = position.y + "px";
+                    };
                 
                     onRemove () {
-                        this.div.parentNode.removeChild(this.div)
-                    }
+                        this.div.parentNode.removeChild(this.div);
+                    };
 
                     activated(text) {
                         this.div.classList.add('is-active');
                         $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
-                    }
+                    };
 
                     desactivated() {
                         this.div.classList.remove('is-active');
                         $('#infoBulle').remove();
-                    }
+                    };
 
                     onClick(cb) {
                         this.div.addEventListener('click', function(e) {
@@ -64,7 +67,7 @@ class GoogleMap {
                             e.stopPropagation();
                             cb();
                         });
-                    }
+                    };
 
                     onOffSurvol(text, cb) {
                         $(this.div).hover(
@@ -92,6 +95,7 @@ class GoogleMap {
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
                     zoom: 15,
+                    mapId: '455789ea7a0a6e59',
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,

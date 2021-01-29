@@ -37,7 +37,7 @@ class Application {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
 
-      const filtreNote = this.arrayRestaurants.filter(element => element.calculAverage() >= value1 && element.calculAverage() <= value2);
+      const filtreNote = this.arrayRestaurants.filter(element => element.average >= value1 && element.average <= value2);
       this.filteredArray = filtreNote;
       console.log(this.filteredArray);
 
@@ -45,7 +45,7 @@ class Application {
       $('#zoneListe ul').empty();
 
       // On relance la fonction initResto avec les resto filtrés
-      this.afterGettingResto(this.filteredArray);
+      this.initResto(this.filteredArray);
     });
   } // Fin fonction filter
 
@@ -99,7 +99,7 @@ class Application {
           urlPhoto = element.photos[0].getUrl();
         }
 
-        const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating);
+        const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.rating);
         this.arrayRestaurants.push(restaurant);
     });
 
@@ -137,6 +137,7 @@ class Application {
       // });
 
       // ---- Affichage dans la liste de droite ----
+      await item.getRatings();
       item.displayRestoList();
 
       // Catch de chaque item de liste présents
@@ -184,15 +185,14 @@ class Application {
     $('h3').html(item.name);
     $('#photoResto').html('<img src="' + item.urlPhoto + '"alt="photo du restaurant">');
     $('#adresseResto p').html(item.address);
-    //$('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
-    //$('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
-    item.getRatings();
+    $('#noteMoyenne p').html('Note moyenne :  ' + item.average + ' / 5' + '<strong> ★</strong>');
+    $('#titleAvis').html('Derniers avis sur ce restaurant (' +  item.ratingsTotal + ' au total) :');
 
     // Récupération des avis
-    // item.getRatings().forEach(element => {
-    //   $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>'
-    //     + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr id="separateCom"> </div>');
-    // });
+    item.ratings.forEach(element => {
+      $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.rating + '/5' + '<i id="dots"> </i> </p>'
+        + '<p>' + 'Commentaire : ' + element.text + '</p> <hr id="separateCom"> </div>');
+    });
 
     // Fermeture du popup
     $('#buttonClose').click(() => {
@@ -258,7 +258,8 @@ class Application {
         this.displayInfoPop(item);
         $('#dots').addClass('fa fa-ellipsis-v');
         // Maj du nb d'avis et de la note dans la liste de droite
-        //$('.restoNote:eq(' + incrementNumber + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
+        item.ratingsTotal += 1;
+        $('.restoNote:eq(' + incrementNumber + ')').html(item.average + '/5' + '<strong> ★</strong>' + ' (' + item.ratingsTotal + ' avis)');
 
         // Disparition du formulaire
         $('#formAvis').slideUp(600);
@@ -335,7 +336,7 @@ class Application {
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${latClick},${longClick}&fov=80&heading=70&pitch=0&key=${apiKey}`;
 
       // Création du nouvel objet restaurant
-      const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ stars: newRestoNote, comment: String(newRestoComment) }]);
+      const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ rating: newRestoNote, text: String(newRestoComment) }], newRestoNote);
       console.log(restoAdded);
 
       // Ajout au tableau des restaurants

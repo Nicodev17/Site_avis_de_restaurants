@@ -99,7 +99,8 @@ class Application {
           urlPhoto = element.photos[0].getUrl();
         }
 
-        const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.rating);
+        // ** Constructor : id, name, urlPhoto, address, lat, lon, placeId, ratings, ratingsTotal, average **
+        const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.user_ratings_total, element.rating);
         this.arrayRestaurants.push(restaurant);
     });
 
@@ -179,7 +180,7 @@ class Application {
   displayInfoPop(item) {
     // Apparition du popup
     $('#overlay').css('display', 'flex');
-    let isPopup = true;
+    $('#overlayBack').css('display', 'flex');
 
     // Affichage des infos dans le popup
     $('h3').html(item.name);
@@ -190,15 +191,23 @@ class Application {
 
     // Récupération des avis
     item.ratings.forEach(element => {
+      let comment = element.text
+
+      if(element.text === "") {
+        comment = " Aucun";
+      } else {
+        comment = element.text;
+      }
+
       $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.rating + '/5' + '<i id="dots"> </i> </p>'
-        + '<p>' + 'Commentaire : ' + element.text + '</p> <hr id="separateCom"> </div>');
+        + '<p>' + 'Commentaire : ' + comment + '</p> <hr id="separateCom"> </div>');
     });
 
     // Fermeture du popup
-    $('#buttonClose').click(() => {
-      isPopup = false;
+    $('#buttonClose , #overlayBack').click(() => {
 
       $('#overlay').css('display', 'none');
+      $('#overlayBack').css('display', 'none');
       $('.ratingItem').remove();
       $('#formAvis').css('display', 'none');
 
@@ -206,21 +215,11 @@ class Application {
       $('#buttonAddAvis').css('display', 'block');
       // Réinitialisation du formulaire
       $('#formulaire').get(0).reset();
+      $('#overlayBack').off();
       $('#buttonClose').off();
       $('#buttonAddAvis').off();
+      $('#formAvis').off();
     });
-
-    // Fermeture de la fenetre lors du clic à l'extérieur (BUG)
-    // if(isPopup === true) {
-    //   console.log('la fenetre pop up s\'ouvre');
-
-    //   $(document).click((event) => { 
-    //     if(!$(event.target).closest('#infoResto').length) {
-    //       //$('#overlay').css('display', 'none');
-    //       console.log('clic en dehors de la fenetre');
-    //     } 
-    //   });
-    // }
 
   } // Fin fonction DisplayInfoPop
 
@@ -243,23 +242,23 @@ class Application {
       // Soumission du formulaire
       $('#formAvis').submit((e) => {
         e.preventDefault();
-        let noteEnter = document.forms["formAvis"]["note"].value;
+        let noteEnter = Number(document.forms["formAvis"]["note"].value);
         let commentEnter = document.forms["formAvis"]["commentaire"].value;
 
         alert('Votre commentaire a été envoyé !');
 
         // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
-        item.addRating(Number(noteEnter), commentEnter);
+        item.addRating(noteEnter, commentEnter);
 
         console.table(this.arrayRestaurants);
 
         // Rafraichissement de l'affichage
+        let totalReviews = item.ratingsTotal += 1;
         $('.ratingItem').remove();
-        this.displayInfoPop(item);
         $('#dots').addClass('fa fa-ellipsis-v');
         // Maj du nb d'avis et de la note dans la liste de droite
-        item.ratingsTotal += 1;
-        $('.restoNote:eq(' + incrementNumber + ')').html(item.average + '/5' + '<strong> ★</strong>' + ' (' + item.ratingsTotal + ' avis)');
+        $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5' + '<strong> ★</strong>' + ' (' + totalReviews + ' avis)');
+        this.displayInfoPop(item);
 
         // Disparition du formulaire
         $('#formAvis').slideUp(600);
@@ -336,7 +335,7 @@ class Application {
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${latClick},${longClick}&fov=80&heading=70&pitch=0&key=${apiKey}`;
 
       // Création du nouvel objet restaurant
-      const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ rating: newRestoNote, text: String(newRestoComment) }], newRestoNote);
+      const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ rating: newRestoNote, text: String(newRestoComment) }], 1, newRestoNote);
       console.log(restoAdded);
 
       // Ajout au tableau des restaurants

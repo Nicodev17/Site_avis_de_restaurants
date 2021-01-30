@@ -1,5 +1,5 @@
 class Restaurant {
-  constructor(id, name, urlPhoto, address, lat, lon, placeId, ratings, average) {
+  constructor(id, name, urlPhoto, address, lat, lon, placeId, ratings, ratingsTotal, average) {
       this.id = id;
       this.name = name;
       this.urlPhoto = urlPhoto;
@@ -10,25 +10,18 @@ class Restaurant {
       };
       this.placeId = placeId;
       this.ratings = ratings;
-      this.ratingsTotal;
+      this.ratingsTotal = ratingsTotal;
       this.average = average;
   }
 
   // ---- Méthode pour calculer la moyenne des notes de tous les avis d'un resto ----
-  // calculAverage(){
-  //     let total = 0;
-
-  //     if(this.ratings.length === 0) {
-  //         return " - ";
-  //     } else {
-  //         this.ratings.forEach(element => {
-  //             total += element.stars;
-  //         });
-  //         let result = total / this.ratings.length;
-  //         result = Math.round(result * 10) / 10;
-  //         return result;
-  //     }
-  // }
+  recalculAverage(noteAdded){
+      let moyenne = this.average;
+      let result = ((moyenne * (this.ratingsTotal -1)) + noteAdded) / this.ratingsTotal;
+      result = Math.round(result * 10) / 10;
+      this.average = result;
+      return result;
+  }
 
   // ---- Méthode pour récupérer les avis ----
   async getRatings(){
@@ -45,9 +38,19 @@ class Restaurant {
       const reviews = requestDetails.result.reviews;
       // console.log(reviews);
 
-      this.ratings = reviews;
-      this.ratingsTotal = response.user_ratings_total;
-      this.average = response.rating;
+      const ratingsTotal = response.user_ratings_total;
+
+      const average = response.rating;
+
+      if(reviews === undefined) {
+        this.ratings = [];
+        this.ratingsTotal = 0;
+        this.average = "-";
+      } else {
+        this.ratings = reviews;
+        this.ratingsTotal = ratingsTotal;
+        this.average = average;
+      }
   }  
 
   // ---- Méthode pour récupérer la photo StreetView du resto (plus utile pour l'instant) ----

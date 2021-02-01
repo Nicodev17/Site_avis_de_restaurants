@@ -24,7 +24,7 @@ class Restaurant {
   }
 
   // ---- Méthode pour récupérer les avis ----
-  async getRatings(){
+  async getRatings() {
 
       let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
 
@@ -45,7 +45,7 @@ class Restaurant {
       if(reviews === undefined) {
         this.ratings = [];
         this.ratingsTotal = 0;
-        this.average = "-";
+        this.average = 0;
       } else {
         this.ratings = reviews;
         this.ratingsTotal = ratingsTotal;
@@ -74,11 +74,21 @@ class Restaurant {
 
   // ---- Méthode pour afficher les restaurants dans la liste de droite ----
   displayRestoList() {
-      $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + this.name + '</h4>'
-      + '<p class="restoAdress">' + this.address + '</p>'
-      + '<p class="restoNote">' + this.average + '/5' + '<strong> ★</strong>' + ' (' + this.ratingsTotal + ' avis)' + '</p>' + '</div>'
-      + '<div class="photoBox">' + '<img src="' + this.urlPhoto + '" class="photoList">' + '</div>' + '</li>');
+    /* Si le resto n'a aucun avis */
+    if(this.average == undefined){
+      this.ratings = [];
+      this.ratingsTotal = "Pas encore d'avis...";
+      this.average = " ";
+    } else {
+      this.ratingsTotal = this.ratingsTotal + ' avis';
+      this.average = this.average + '/5 <strong> ★</strong>';
     }
+
+    $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + this.name + '</h4>'
+    + '<p class="restoAdress">' + this.address + '</p>'
+    + '<p class="restoNote">' + this.average + ' (' + this.ratingsTotal + ')' + '</p>' + '</div>'
+    + '<div class="photoBox">' + '<img src="' + this.urlPhoto + '" class="photoList">' + '</div>' + '</li>');
+  }
 
   // ---- Méthode du comportement des marqueurs au survol d'un item de liste ----
   // ** item : restaurant du tableau arrayResto / marker : le marker correspondant / listItem : item de la liste **

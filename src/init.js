@@ -12,3 +12,4 @@ window.addEventListener("load", function() {
 const newApplication = new Application();
 newApplication.sliderInit();
 newApplication.filter();
+

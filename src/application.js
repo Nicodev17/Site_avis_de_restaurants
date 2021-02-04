@@ -5,7 +5,7 @@ class Application {
   constructor() {
     this.mapClass = new GoogleMap();
     this.arrayRestaurants = [];
-    this.filteredArray = [];
+    this.filteredArray;
     this.arrayMarkers = [];
   }
   
@@ -35,8 +35,8 @@ class Application {
         service.nearbySearch(request, (results, status) => {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             let place = results;
-            //console.log(place);
-            //console.log(place[0].photos[0].getUrl());
+            // console.log(place);
+            // console.log(place[0]);
             res(place);
           }
         });
@@ -66,12 +66,12 @@ class Application {
     // Tableau de base des restaurants (sortie de requete)
     console.log(this.arrayRestaurants);
 
-    this.getRatings()
+    this.getingRatings();
   
-  } // Fin fonction GetResto
+  } // Fin fonction getResto
 
-  /* ---- Lancement de la fonction de récupération d'avis de places details ---- */
-  async getRatings() {
+  /* ---- Lancement de la fonction de récupération d'avis de Places Details ---- */
+  async getingRatings() {
     for (let i = 0; i < this.arrayRestaurants.length; i++) {
       let item = this.arrayRestaurants[i];
       await item.getRatings();
@@ -100,6 +100,7 @@ class Application {
   /* ---- Récupération des valeurs du slider et filtrage ---- */ 
  async filter() {
    await this.getResto();
+   await this.addResto();
    await this.initDisplayResto(this.arrayRestaurants);
 
     $("#slider-range").on("slide", (event, ui) => {
@@ -123,8 +124,6 @@ class Application {
   ----------------------------------------------------------------------*/
   async initDisplayResto(arrayResto) {
     let mapClass = this.mapClass;
-    // await mapClass.load(zoneMap);
-    // await mapClass.geoloc();
     
     // Fonction d'ajout de resto
     await this.addResto();
@@ -147,7 +146,7 @@ class Application {
 
       // ---- Affichage dans la liste de droite ----
       item.displayRestoList();
-      // item.getRatings();
+      //item.getRatings();
 
       // Catch de chaque item de liste présents
       let listItem = $('#zoneListe li:eq(' + i + ')');
@@ -157,12 +156,10 @@ class Application {
 
       // ---- Comportement d'un marqueur au clic direct ----
       marker.onClick(() => {
-        // console.log(item.name);
-
         // On relance les fonctions du pop up
         this.displayInfoPop(item);
         this.addingRate(item, i);
-        this.addResto();
+        //this.addResto();
       });
 
       // ---- Comportement d'un marqueur à son survol direct sur la map ----
@@ -174,8 +171,7 @@ class Application {
         this.displayInfoPop(item);
 
         // Appel de la fonction d'ajout d'avis
-        let incrementNumber = i;
-        this.addingRate(item, incrementNumber);
+        this.addingRate(item, i);
       });
 
     } // Fin boucle for
@@ -194,7 +190,7 @@ class Application {
     $('h3').html(item.name);
     $('#photoResto').html('<img src="' + item.urlPhoto + '"alt="photo du restaurant">');
     $('#adresseResto p').html(item.address);
-    $('#noteMoyenne p').html('Note moyenne :  ' + item.average + ' / 5' + '<strong> ★</strong>');
+    $('#noteMoyenne p').html('Note moyenne :  ' + item.average + ' / 5 <strong> ★</strong>');
     $('#titleAvis').html('Derniers avis sur ce restaurant (' + item.ratingsTotal + ' au total) :');
 
     // Récupération des avis
@@ -265,7 +261,7 @@ class Application {
         $('.ratingItem').remove();
         $('#dots').addClass('fa fa-ellipsis-v');
         // Maj du nb d'avis et de la note dans la liste de droite
-        $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5' + '<strong> ★</strong>' + ' (' + totalReviews + ' avis)');
+        $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5 <strong> ★</strong>' + ' (' + totalReviews + ' avis)');
         this.displayInfoPop(item);
 
         // Disparition du formulaire
@@ -348,12 +344,12 @@ class Application {
 
       // Ajout au tableau des restaurants
       this.arrayRestaurants.push(restoAdded);
-      console.log(this.arrayRestaurants);
+      // console.log(this.arrayRestaurants);
 
       // Création du marqueur
       let marker = mapClass.addMarker(growId, latClick, longClick, 'media/icon_marker_added.png');
       this.arrayMarkers.push(marker);
-      console.log(this.arrayMarkers);
+      // console.log(this.arrayMarkers);
 
       // Ajout dans la liste
       restoAdded.displayRestoList();

@@ -62,9 +62,9 @@ class GoogleMap {
                     };
 
                     onClick(cb) {
-                        this.div.addEventListener('click', function(e) {
-                            e.preventDefault();
+                        this.div.addEventListener('click', (e) => {
                             e.stopPropagation();
+                            e.preventDefault();
                             cb();
                         });
                     };
@@ -80,14 +80,6 @@ class GoogleMap {
                                 this.desactivated();
                             }
                         );
-
-                        // this.div.classList.add('is-onSurvol');
-                        // this.div.addEventListener('mouseover', (e)=> {
-                        //     e.preventDefault();
-                        //     e.stopPropagation();
-                        //     cb();
-                        //     console.log('Marker SURVOLÉ !');
-                        // });
                     }
 
                 } // Fin class RestoMarker
@@ -128,6 +120,7 @@ class GoogleMap {
                 this.map.panTo(this.userPosition);
                 // Ajout du marker de l'user
                 const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
+                markerUser.onOffSurvol('Vous');
                 resolve();
             });
         });

@@ -51,16 +51,7 @@ class Restaurant {
         this.ratingsTotal = ratingsTotal;
         this.average = average;
       }
-  }  
-
-  // ---- Méthode pour récupérer la photo StreetView du resto (plus utile pour l'instant) ----
-  // getPhoto(url){
-  //     // let lat = this.position.lat;
-  //     // let lon = this.position.lon;
-  //     // let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
-  //     // let url = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${lat},${lon}&fov=80&heading=70&pitch=0&key=${apiKey}`;
-  //     // return url
-  // }
+  }
   
   // ---- Méthode pour ajouter un avis (note + com) ----
   addRating(rating, text){
@@ -77,16 +68,16 @@ class Restaurant {
     /* Si le resto n'a aucun avis */
     if(this.average == undefined){
       this.ratings = [];
-      this.ratingsTotal = "Pas encore d'avis...";
-      this.average = " ";
+      this.ratingsTotal = "Aucun";
+      this.average = " - ";
     } else {
-      this.ratingsTotal = this.ratingsTotal + ' avis';
-      this.average = this.average + '/5 <strong> ★</strong>';
+      this.ratingsTotal = this.ratingsTotal;
+      this.average = this.average;
     }
 
     $('#zoneListe ul').append('<li class="listItem">' + '<div class="contentItem">' + '<h4>' + this.name + '</h4>'
     + '<p class="restoAdress">' + this.address + '</p>'
-    + '<p class="restoNote">' + this.average + ' (' + this.ratingsTotal + ')' + '</p>' + '</div>'
+    + '<p class="restoNote">' + this.average + '/5 <strong> ★</strong>' + ' (' + this.ratingsTotal + ' avis)' + '</p>' + '</div>'
     + '<div class="photoBox">' + '<img src="' + this.urlPhoto + '" class="photoList">' + '</div>' + '</li>');
   }
 

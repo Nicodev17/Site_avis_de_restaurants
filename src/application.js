@@ -2,8 +2,8 @@
 --------------|| Récupération des données et affichage ||---------------
 ----------------------------------------------------------------------*/
 class Application {
-  constructor() {
-    this.mapClass = new GoogleMap();
+  constructor(mapClass) {
+    this.mapClass = mapClass;
     this.arrayRestaurants = [];
     this.filteredArray;
     this.arrayMarkers = [];
@@ -12,19 +12,25 @@ class Application {
   /*----------------------------------------------------------------------
   ---------|| Requête pour récupérer les restos (API Places) ||-----------
   ----------------------------------------------------------------------*/
-  async getResto() {
+  async getResto(mapCenter) {
     let mapClass = this.mapClass;
-    await mapClass.load(zoneMap);
-    await mapClass.geoloc();
-  
+    // await mapClass.load(zoneMap);
+    // await mapClass.geoloc();
+    this.arrayRestaurants = [];
+
+    let center = mapCenter;
+
+    if (center == undefined) {
+      center = mapClass.userPosition;
+    } else {
+      center = mapCenter;
+    }
+    // console.log(center);
+
     // ----- API Google Places -----
     let request = {
-      // Base (position de l'user)
-      location: mapClass.userPosition,
-      //bounds: mapClass.map.getBounds(),
-      // Rayon en metres
-      radius: 1500,
-      // Type de lieu recherché
+      location: center,
+      radius: 1000,
       type: ['restaurant'],
     };
   
@@ -67,6 +73,8 @@ class Application {
     console.log(this.arrayRestaurants);
 
     this.getingRatings();
+
+    await this.initDisplayResto(this.arrayRestaurants);
   
   } // Fin fonction getResto
 
@@ -79,7 +87,7 @@ class Application {
   }
 
   /*----------------------------------------------------------------------
-  --------------|| Filtrage des restos selon leur moyenne ||--------------
+  ----|| Filtrage des restos selon leur moyenne et leur emplacement ||----
   ----------------------------------------------------------------------*/
 
   /* ----- Création du slider de filtrage des notes ---- */
@@ -97,12 +105,27 @@ class Application {
       " & " + $("#slider-range").slider("values", 1));
   }; // Fin fonction sliderInit
 
-  /* ---- Récupération des valeurs du slider et filtrage ---- */ 
- async filter() {
-   await this.getResto();
-   await this.addResto();
-   await this.initDisplayResto(this.arrayRestaurants);
+  async moveMap() {
+    let mapClass = this.mapClass;
 
+   // Event du drag de la map
+    mapClass.map.addListener("dragend", async () => {
+      console.log('la map bouge !');
+
+      let newCenterMap = {
+        lat: mapClass.map.getCenter().lat(),
+        lng: mapClass.map.getCenter().lng()
+      }
+      // console.log(newCenterMap);
+
+      // Relancement de la fonction getResto avec le nouveau centre
+      await this.getResto(newCenterMap);
+    });
+  }
+
+  /* ---- Filtrage selon les notes et le déplacement de la map ---- */ 
+ filter() {
+    // Event du filtrage selon les notes
     $("#slider-range").on("slide", (event, ui) => {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
@@ -124,29 +147,25 @@ class Application {
   ----------------------------------------------------------------------*/
   async initDisplayResto(arrayResto) {
     let mapClass = this.mapClass;
-    
-    // Fonction d'ajout de resto
-    await this.addResto();
+    $('#zoneListe ul li').remove();
     
     // ---- Pour chaque objet restaurant ----
     for (let i = 0; i < arrayResto.length; i++) {
       let item = arrayResto[i];
-
-      // ---- Création d'un marqueur perso ----
+      
+      // Efface les marqueurs précèdents sauf celui de l'user
+      $('.marker').filter(":not(#marker-200)").remove();
+      
+      // ---- Création des marqueurs ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
       this.arrayMarkers.push(marker);
 
-      // Marqueurs de base (en arrière plan)
-      // let markerBack = new google.maps.Marker({
-      //   position: {lat: item.position.lat, lng: item.position.lon },
-      //   map: this.mapClass.map,
-      //   opacity: 0, // (invisibles)
-      // });
+      // Adaptation de la map
+      // mapClass.centerMap();
 
       // ---- Affichage dans la liste de droite ----
       item.displayRestoList();
-      //item.getRatings();
 
       // Catch de chaque item de liste présents
       let listItem = $('#zoneListe li:eq(' + i + ')');
@@ -159,7 +178,6 @@ class Application {
         // On relance les fonctions du pop up
         this.displayInfoPop(item);
         this.addingRate(item, i);
-        //this.addResto();
       });
 
       // ---- Comportement d'un marqueur à son survol direct sur la map ----
@@ -273,24 +291,24 @@ class Application {
         $('#formAvis').off();
 
         // Suppression de com (NON FONCTIONNELLE)
-        $('#dots').click(function () {
-          let dotsClicked = true;
-          $('#bulleSuppr').css('display', 'flex');
+        // $('#dots').click(function () {
+        //   let dotsClicked = true;
+        //   $('#bulleSuppr').css('display', 'flex');
 
-          $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
-          $('#buttonSuppr').click(function () {
-            console.log('suppression du com');
-          })
+        //   $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
+        //   $('#buttonSuppr').click(function () {
+        //     console.log('suppression du com');
+        //   })
 
-          if (dotsClicked == true) {
-            $('#dots').click(function () {
-              console.log('TEST');
-              $('#bulleSuppr').css('display', 'none');
-            });
-            $('#dots').off();
-            dotsClicked = false;
-          }
-        });
+        //   if (dotsClicked == true) {
+        //     $('#dots').click(function () {
+        //       console.log('TEST');
+        //       $('#bulleSuppr').css('display', 'none');
+        //     });
+        //     $('#dots').off();
+        //     dotsClicked = false;
+        //   }
+        // });
       });
 
       // Annulation de l'envoi de com
@@ -309,8 +327,6 @@ class Application {
   ----------------------------------------------------------------------*/
   async addResto() {
     let mapClass = this.mapClass;
-    await mapClass.load(zoneMap);
-    await mapClass.geoloc();
 
     mapClass.map.addListener("rightclick", async (e) => {
       let latClick = e.latLng.lat();

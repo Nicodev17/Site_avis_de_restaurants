@@ -28,6 +28,7 @@ class GoogleMap {
                         this.id = id;
                         this.iconSrc = iconSrc;
                         this.setMap(map);
+                        this.bounds = null;
                     };
                 
                     onAdd () {
@@ -91,6 +92,7 @@ class GoogleMap {
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
+                    scrollwheel: true,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
                         },
@@ -99,9 +101,9 @@ class GoogleMap {
                         style: google.maps.NavigationControlStyle.ZOOM_PAN
                     }
                 });
+                this.bounds = new google.maps.LatLngBounds();
                 resolve();
             });
-
         });
     } // fin fonction load
 
@@ -117,7 +119,7 @@ class GoogleMap {
                     lng: pos.coords.longitude
                 }
                 //Centrage de la map sur l'user
-                this.map.panTo(this.userPosition);
+                this.map.setCenter(this.userPosition);
                 // Ajout du marker de l'user
                 const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
                 markerUser.onOffSurvol('Vous');
@@ -137,7 +139,16 @@ class GoogleMap {
     addMarker(id, lat, lng, iconSrc) {
         let coord = new google.maps.LatLng(lat, lng);
         let marker = new this.restoMarker(coord, this.map, id, iconSrc);
+        //$(this.map).gmap('set', 'bounds', null)
+        //this.bounds.extend(coord);
         return marker;
+    }
+
+    // Centre la map pour englober les marqueurs
+    centerMap() {
+        // this.map.panTo(this.userPosition);
+        this.map.panToBounds(this.bounds);
+        // this.map.fitBounds(this.bounds);
     }
 
 } // Fin class GoogleMap

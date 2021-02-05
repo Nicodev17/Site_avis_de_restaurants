@@ -8,8 +8,23 @@ window.addEventListener("load", function() {
     $('#logo').animate({marginTop:'0px', opacity:'1'}, 800);
 });
 
-// Application
-const newApplication = new Application();
-newApplication.sliderInit();
-newApplication.filter();
+
+async function init() {
+    let mapClass = new GoogleMap();
+    await mapClass.load(zoneMap);
+    await mapClass.geoloc();
+    
+    // Application
+    const newApplication = new Application(mapClass);
+    newApplication.getResto();
+    newApplication.sliderInit();
+    newApplication.moveMap();
+    newApplication.filter();
+    newApplication.addResto();
+}
+
+init();
+
+
+
 

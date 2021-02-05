@@ -2,112 +2,167 @@
 --------------|| Récupération des données et affichage ||---------------
 ----------------------------------------------------------------------*/
 class Application {
-  constructor() {
-    this.mapClass = new GoogleMap();
-    this.arrayRestaurants;
+  constructor(mapClass) {
+    this.mapClass = mapClass;
+    this.arrayRestaurants = [];
     this.filteredArray;
     this.arrayMarkers = [];
   }
+  
+  /*----------------------------------------------------------------------
+  ---------|| Requête pour récupérer les restos (API Places) ||-----------
+  ----------------------------------------------------------------------*/
+  async getResto(mapCenter) {
+    let mapClass = this.mapClass;
+    // await mapClass.load(zoneMap);
+    // await mapClass.geoloc();
+    this.arrayRestaurants = [];
 
-/*----------------------------------------------------------------------
---------------|| Filtrage des restos selon leur moyenne ||--------------
-----------------------------------------------------------------------*/
+    let center = mapCenter;
+
+    if (center == undefined) {
+      center = mapClass.userPosition;
+    } else {
+      center = mapCenter;
+    }
+    // console.log(center);
+
+    // ----- API Google Places -----
+    let request = {
+      location: center,
+      radius: 1000,
+      type: ['restaurant'],
+    };
+  
+    let service = new google.maps.places.PlacesService(mapClass.map);
+  
+    function getPlaces(service) {
+      return new Promise((res, rej) => {
+        service.nearbySearch(request, (results, status) => {
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            let place = results;
+            // console.log(place);
+            // console.log(place[0]);
+            res(place);
+          }
+        });
+      });
+    }
+  
+    let places = await getPlaces(service);
+  
+    // Pour chaque item reçu => Création d'un objet restaurant contenant ses propres méthodes d'instance
+    places.forEach((element, index) => {
+      // Récupération de la photo du lieu
+      let urlPhoto;
+      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+      let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${element.geometry.location.lat()},${element.geometry.location.lng()}&fov=80&heading=70&pitch=0&key=${apiKey}`;
+  
+      if (element.photos == undefined) {
+        urlPhoto = urlStreetView;
+      } else {
+        urlPhoto = element.photos[0].getUrl();
+      }
+  
+      // ** Constructor : id, name, urlPhoto, address, lat, lon, placeId, ratings, ratingsTotal, average **
+      const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.user_ratings_total, element.rating);
+      this.arrayRestaurants.push(restaurant);
+    });
+  
+    // Tableau de base des restaurants (sortie de requete)
+    console.log(this.arrayRestaurants);
+
+    this.getingRatings();
+
+    await this.initDisplayResto(this.arrayRestaurants);
+  
+  } // Fin fonction getResto
+
+  /* ---- Lancement de la fonction de récupération d'avis de Places Details ---- */
+  async getingRatings() {
+    for (let i = 0; i < this.arrayRestaurants.length; i++) {
+      let item = this.arrayRestaurants[i];
+      await item.getRatings();
+    }
+  }
+
+  /*----------------------------------------------------------------------
+  ----|| Filtrage des restos selon leur moyenne et leur emplacement ||----
+  ----------------------------------------------------------------------*/
 
   /* ----- Création du slider de filtrage des notes ---- */
   sliderInit() {
     $("#slider-range").slider({
       range: true,
-      min: 1,
+      min: 0,
       max: 5,
-      values: [1, 5],
+      values: [0, 5],
       slide: function (event, ui) {
-        $("#note").val("Note entre " + ui.values[0] + " et " + ui.values[1] + " ★");
+        $("#note").val("Note entre " + ui.values[0] + " & " + ui.values[1]);
       }
     });
     $("#note").val("Note entre " + $("#slider-range").slider("values", 0) +
-      " et " + $("#slider-range").slider("values", 1) + " ★");
+      " & " + $("#slider-range").slider("values", 1));
   }; // Fin fonction sliderInit
 
-  /* ---- Récupération des valeurs du slider et filtrage ---- */
-  async filter() {
-    await this.getResto();
-    await this.initResto(this.arrayRestaurants);
+  async moveMap() {
+    let mapClass = this.mapClass;
 
+   // Event du drag de la map
+    mapClass.map.addListener("dragend", async () => {
+      console.log('la map bouge !');
+
+      let newCenterMap = {
+        lat: mapClass.map.getCenter().lat(),
+        lng: mapClass.map.getCenter().lng()
+      }
+      // console.log(newCenterMap);
+
+      // Relancement de la fonction getResto avec le nouveau centre
+      await this.getResto(newCenterMap);
+    });
+  }
+
+  /* ---- Filtrage selon les notes et le déplacement de la map ---- */ 
+ filter() {
+    // Event du filtrage selon les notes
     $("#slider-range").on("slide", (event, ui) => {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
-
-      const filtreNote = this.arrayRestaurants.filter(element => element.calculAverage() >= value1 && element.calculAverage() <= value2);
+      const filtreNote = this.arrayRestaurants.filter(element => element.average >= value1 && element.average <= value2);
       this.filteredArray = filtreNote;
       console.log(this.filteredArray);
 
       // maj de la liste
       $('#zoneListe ul').empty();
 
-      // On relance la fonction initResto avec les resto filtrés
-      this.initResto(this.filteredArray);
+      // On relance la fonction initDisplayResto avec les resto filtrés
+      this.initDisplayResto(this.filteredArray);
     });
+
   } // Fin fonction filter
-
-
-/*----------------------------------------------------------------------
--------------|| Récupération des restos (requete JSON) ||---------------
-----------------------------------------------------------------------*/
-  async getResto() {
-    // Promesse synchrone sur le fichier json 
-    const restaurants = await fetch('src/items.json')
-      .then(resultat => resultat.json())
-      .then(json => json)
-
-    // Resultat de la requete
-    let result = restaurants;
-
-    // Requete pour récupérer plus de restaurants (Places API)
-    // const placesRequest = await fetch('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&libraries=places')
-    // .then(resultat => resultat.json())
-    // .then(json => json)
-
-    // const newPlacesRequest = placesRequest.resultat;
-    // console.log(newPlacesRequest);
-
-    let arrayRestoLocal = [];
-    // Pour chaque item reçu dans la réponse => Création d'un objet restaurant contenant ses propres méthodes d'instance
-    result.forEach((element, index) => {
-      const restaurant = new Restaurant(index, element.restaurantName, element.address, element.lat, element.lon, element.ratings);
-      arrayRestoLocal.push(restaurant)
-    });
-
-    this.arrayRestaurants = arrayRestoLocal;
-  } // Fin fonction getResto
 
   /*----------------------------------------------------------------------
   ---------------|| Affichage des restos (map et liste) ||----------------
   ----------------------------------------------------------------------*/
-  async initResto(arrayResto) {
+  async initDisplayResto(arrayResto) {
     let mapClass = this.mapClass;
-    await this.mapClass.load(zoneMap);
-    await this.mapClass.geoloc();
-    // Fonction d'ajout de resto
-    await this.addResto();
-
-    // Tableau contenant tous les objets Restaurant
-    console.table(arrayResto);
-
+    $('#zoneListe ul li').remove();
+    
     // ---- Pour chaque objet restaurant ----
     for (let i = 0; i < arrayResto.length; i++) {
       let item = arrayResto[i];
-
-      // ---- Création d'un marqueur perso ----
+      
+      // Efface les marqueurs précèdents sauf celui de l'user
+      $('.marker').filter(":not(#marker-200)").remove();
+      
+      // ---- Création des marqueurs ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
       this.arrayMarkers.push(marker);
 
-      // Marqueurs de base (en arrière plan)
-      // let markerBack = new google.maps.Marker({
-      //   position: {lat: item.position.lat, lng: item.position.lon },
-      //   map: this.mapClass.map,
-      //   opacity: 0, // (invisibles)
-      // });
+      // Adaptation de la map
+      // mapClass.centerMap();
 
       // ---- Affichage dans la liste de droite ----
       item.displayRestoList();
@@ -116,17 +171,17 @@ class Application {
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
       // Appel de la fonction du comportement des marqueurs au survol d'un item de la liste
-      item.markerEvent(item, marker, listItem);
+      item.markerEventHover(item, marker, listItem);
 
-      //---- Comportement d'un marqueur à son survol direct sur la map ----
-      // $(document).ready(function event() {
-      //   $('.marker').hover(function() {
-      //     marker.onSurvol();
-      //     },
-      //     function() {
-      //       marker.offSurvol();
-      //     });
-      // });
+      // ---- Comportement d'un marqueur au clic direct ----
+      marker.onClick(() => {
+        // On relance les fonctions du pop up
+        this.displayInfoPop(item);
+        this.addingRate(item, i);
+      });
+
+      // ---- Comportement d'un marqueur à son survol direct sur la map ----
+      marker.onOffSurvol(item.name);
 
       // ---- POP UP FENETRE INFOS ----
       listItem.click(() => {
@@ -134,40 +189,47 @@ class Application {
         this.displayInfoPop(item);
 
         // Appel de la fonction d'ajout d'avis
-        let incrementNumber = i;
-        this.addingRate(item, incrementNumber);
+        this.addingRate(item, i);
       });
 
     } // Fin boucle for
 
-  } // Fin fonction initResto
+  } // Fin fonction initDisplayResto
 
-/*----------------------------------------------------------------------
--------------------|| Fonction de gestion du pop up ||------------------
-----------------------------------------------------------------------*/
+  /*----------------------------------------------------------------------
+  -------------------|| Fonction de gestion du pop up ||------------------
+  ----------------------------------------------------------------------*/
   displayInfoPop(item) {
     // Apparition du popup
     $('#overlay').css('display', 'flex');
-    let isPopup = true;
+    $('#overlayBack').css('display', 'flex');
 
     // Affichage des infos dans le popup
     $('h3').html(item.name);
-    $('#photoResto').html('<img src="' + item.getPhoto() + '"alt="photo du restaurant">');
+    $('#photoResto').html('<img src="' + item.urlPhoto + '"alt="photo du restaurant">');
     $('#adresseResto p').html(item.address);
-    $('#noteMoyenne p').html('Note moyenne :  ' + item.calculAverage() + ' / 5' + '<strong> ★</strong>');
-    $('#titleAvis').html(item.getRatings().length + ' avis sur ce restaurant :');
+    $('#noteMoyenne p').html('Note moyenne :  ' + item.average + ' / 5 <strong> ★</strong>');
+    $('#titleAvis').html('Derniers avis sur ce restaurant (' + item.ratingsTotal + ' au total) :');
 
     // Récupération des avis
-    item.getRatings().forEach(element => {
-      $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.stars + '/5' + '<i id="dots"> </i> </p>'
-        + '<p>' + 'Commentaire : ' + element.comment + '</p> <hr> </div>');
+    item.ratings.forEach(element => {
+      let comment = element.text
+
+      if (element.text === "") {
+        comment = " Aucun";
+      } else {
+        comment = element.text;
+      }
+
+      $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.rating + '/5' + '<i id="dots"> </i> </p>'
+        + '<p>' + 'Commentaire : ' + comment + '</p> <hr id="separateCom"> </div>');
     });
 
     // Fermeture du popup
-    $('#buttonClose').click(() => {
-      isPopup = false;
+    $('#buttonClose , #overlayBack').click(() => {
 
       $('#overlay').css('display', 'none');
+      $('#overlayBack').css('display', 'none');
       $('.ratingItem').remove();
       $('#formAvis').css('display', 'none');
 
@@ -175,27 +237,17 @@ class Application {
       $('#buttonAddAvis').css('display', 'block');
       // Réinitialisation du formulaire
       $('#formulaire').get(0).reset();
+      $('#overlayBack').off();
       $('#buttonClose').off();
       $('#buttonAddAvis').off();
+      $('#formAvis').off();
     });
-
-    // Fermeture de la fenetre lors du clic à l'extérieur (BUG)
-    // if(isPopup === true) {
-    //   console.log('la fenetre pop up s\'ouvre');
-
-    //   $(document).click((event) => { 
-    //     if(!$(event.target).closest('#infoResto').length) {
-    //       //$('#overlay').css('display', 'none');
-    //       console.log('clic en dehors de la fenetre');
-    //     } 
-    //   });
-    // }
 
   } // Fin fonction DisplayInfoPop
 
-/*----------------------------------------------------------------------
-----------------------|| Fonction d'ajout d'avis ||---------------------
-----------------------------------------------------------------------*/
+  /*----------------------------------------------------------------------
+  ----------------------|| Fonction d'ajout d'avis ||---------------------
+  ----------------------------------------------------------------------*/
   addingRate(item, incrementNumber) {
 
     $('#buttonAddAvis').click(() => {
@@ -212,22 +264,23 @@ class Application {
       // Soumission du formulaire
       $('#formAvis').submit((e) => {
         e.preventDefault();
-        let noteEnter = document.forms["formAvis"]["note"].value;
+        let noteEnter = Number(document.forms["formAvis"]["note"].value);
         let commentEnter = document.forms["formAvis"]["commentaire"].value;
 
         alert('Votre commentaire a été envoyé !');
 
         // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
-        item.addRating(Number(noteEnter), commentEnter);
+        item.addRating(noteEnter, commentEnter);
 
-        console.table(this.arrayRestaurants);
+        //console.table(this.arrayRestaurants);
 
         // Rafraichissement de l'affichage
+        let totalReviews = item.ratingsTotal += 1;
         $('.ratingItem').remove();
-        this.displayInfoPop(item);
         $('#dots').addClass('fa fa-ellipsis-v');
         // Maj du nb d'avis et de la note dans la liste de droite
-        $('.restoNote:eq(' + incrementNumber + ')').html(item.calculAverage() + '/5' + '<strong> ★</strong>' + ' (' + item.getRatings().length + ' avis)');
+        $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5 <strong> ★</strong>' + ' (' + totalReviews + ' avis)');
+        this.displayInfoPop(item);
 
         // Disparition du formulaire
         $('#formAvis').slideUp(600);
@@ -238,24 +291,24 @@ class Application {
         $('#formAvis').off();
 
         // Suppression de com (NON FONCTIONNELLE)
-        $('#dots').click(function () {
-          let dotsClicked = true;
-          $('#bulleSuppr').css('display', 'flex');
+        // $('#dots').click(function () {
+        //   let dotsClicked = true;
+        //   $('#bulleSuppr').css('display', 'flex');
 
-          $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
-          $('#buttonSuppr').click(function () {
-            console.log('suppression du com');
-          })
+        //   $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
+        //   $('#buttonSuppr').click(function () {
+        //     console.log('suppression du com');
+        //   })
 
-          if (dotsClicked == true) {
-            $('#dots').click(function () {
-              console.log('TEST');
-              $('#bulleSuppr').css('display', 'none');
-            });
-            $('#dots').off();
-            dotsClicked = false;
-          }
-        });
+        //   if (dotsClicked == true) {
+        //     $('#dots').click(function () {
+        //       console.log('TEST');
+        //       $('#bulleSuppr').css('display', 'none');
+        //     });
+        //     $('#dots').off();
+        //     dotsClicked = false;
+        //   }
+        // });
       });
 
       // Annulation de l'envoi de com
@@ -275,12 +328,10 @@ class Application {
   async addResto() {
     let mapClass = this.mapClass;
 
-    //console.log(this.arrayMarkers);
-    
     mapClass.map.addListener("rightclick", async (e) => {
       let latClick = e.latLng.lat();
       let longClick = e.latLng.lng();
-      
+
       // Prend le nombre de restos existants pour faire suivre l'id du new resto
       let growId = this.arrayRestaurants.length;
 
@@ -290,50 +341,57 @@ class Application {
         .then(json => json)
       const newRestoAdress = adressRequest.results[0].formatted_address;
 
-      // -- Formulaire
+      // -- Formulaire (à améliorer)
       const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
-
       let newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
       while (newRestoNote < 0 || newRestoNote > 5 || isNaN(newRestoNote) === true) {
         alert('Note invalide ! Votre note doit se situer entre 0 et 5.');
         newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
       };
-
       const newRestoComment = prompt('Entrez le commentaire que vous souhaitez laisser sur ce restaurant', "Votre commentaire");
       // -- fin formulaire
 
+      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+      let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${latClick},${longClick}&fov=80&heading=70&pitch=0&key=${apiKey}`;
+
       // Création du nouvel objet restaurant
-      const restoAdded = new Restaurant(growId, newRestoName, newRestoAdress, latClick, longClick, [{ stars: newRestoNote, comment: String(newRestoComment) }]);
+      const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ rating: newRestoNote, text: String(newRestoComment) }], 1, newRestoNote);
       console.log(restoAdded);
 
       // Ajout au tableau des restaurants
       this.arrayRestaurants.push(restoAdded);
-      console.log(this.arrayRestaurants);
+      // console.log(this.arrayRestaurants);
 
       // Création du marqueur
-      let marker = mapClass.addMarker(500, latClick, longClick, 'media/icon_marker_added.png');
+      let marker = mapClass.addMarker(growId, latClick, longClick, 'media/icon_marker_added.png');
+      this.arrayMarkers.push(marker);
+      // console.log(this.arrayMarkers);
 
       // Ajout dans la liste
       restoAdded.displayRestoList();
 
-
       // Scroll auto en bas de la liste
       $('#zoneListe ul')[0].scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
 
-      // On relance la fonction du comportement des marqueurs au survol
+      // On relance les fonctions du comportement des marqueurs au survol et au clic
       let listItem = $('#zoneListe li:last-child');
-      restoAdded.markerEvent(restoAdded, marker, listItem);
+      restoAdded.markerEventHover(restoAdded, marker, listItem);
+      marker.onOffSurvol(restoAdded.name);
+      marker.onClick(() => {
+        console.log(restoAdded.name);
+        // On relance les fonctions du pop up
+        this.displayInfoPop(restoAdded);
+        this.addingRate(restoAdded, growId);
+      });
 
       // Au clic sur le nouvel item de liste
       listItem.click(() => {
-        //isPopup = true;
-
         // Lancement fonction du pop up
         this.displayInfoPop(restoAdded);
         // Fonction d'ajout d'avis
         this.addingRate(restoAdded, growId);
       });
-      
+
     });
 
   } // Fin fonction addResto

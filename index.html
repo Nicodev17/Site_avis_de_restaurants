@@ -19,13 +19,17 @@
     <!-- entête du site -->
     <header>
         <div id="zoneTitre">
-            <img id="logo" src="media/logo_pasta.png" alt="logo pizza">
+            <img id="logo" src="media/logo_vicino_resto.png" alt="logo vicino resto">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
+        <h2>AVIS DE RESTAURANTS PRÈS DE CHEZ VOUS !</h2>
     </header>
     
     <!-- Fenetre pop up -->
+    <div id="overlayBack">
+        
+    </div>
+    
     <div id="overlay">
         <div id="infoResto">
             
@@ -35,6 +39,12 @@
 
             <h3> Nom resto </h3>
 
+            <hr id="separatePop">
+            
+            <!-- <div id="iconCook">
+                <img src="media/cooking.png" alt="image de cuisto">
+            </div> -->
+
             <div id="photoResto"> </div>
 
             <div id="adresseResto">
@@ -43,6 +53,10 @@
 
             <div id="noteMoyenne">
                 <p> Note moyenne : X/5 </p>
+            </div>
+
+            <div id="iconRate">
+                <img src="media/taste.png" alt="image de pouce">
             </div>
 
             <div id="zoneAvis">
@@ -71,13 +85,16 @@
         </div>
     </div>
 
-    <!-- zone de filtrage -->
+    <!-- Zone d'info UX et de filtrage -->
 
     <div id="zoneInfo">
-        <p id="textInfo">Faites un clic-droit sur la carte pour ajouter un nouveau restaurant 👇</p>
+        <div id="zoneInfoClic">
+            <p id="textInfo">Faites un <bold>clic-droit</bold> sur la carte pour ajouter un nouveau restaurant </p>
+            <img src="media/mouse.png" id="iconMouse" alt="icon mouse">
+        </div>
         
         <div id="zoneRange">
-            <p> Filtrer les restaurants : </p>
+            <p> <bold>Filtrez</bold> les restaurants 🔍 </p>
             <div id="contentRange"> 
                 <input type="text" readonly="readonly" id="note">
                 <div id="slider-range"> </div>

@@ -17,62 +17,82 @@ class GoogleMap {
     async load(element) {
         return new Promise((resolve, reject) => {
             // Récupération de la map via l'api google maps
-            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k', () => {
+            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&map_ids=455789ea7a0a6e59&libraries=places', () => {
                 
                 // Class et méthodes pour les marqueurs personnalisés
                 this.restoMarker = class RestoMarker extends google.maps.OverlayView {
                     constructor (pos, map, id, iconSrc) {
-                        super()
-                        this.div = null
-                        this.pos = pos
-                        this.id = id
-                        this.iconSrc = iconSrc
-                        this.setMap(map)
-                    }
+                        super();
+                        this.div = document.createElement('div');
+                        this.pos = pos;
+                        this.id = id;
+                        this.iconSrc = iconSrc;
+                        this.setMap(map);
+                        this.bounds = null;
+                    };
                 
                     onAdd () {
-                        this.div = document.createElement('div')
-                        this.div.classList.add('marker')
-                        $(this.div).attr('id', `marker-${this.id}`)
-                        this.div.style.position = 'absolute'
-                        this.div.innerHTML = '<img src="' + this.iconSrc + '"alt="image marker" />'
-                        this.getPanes().overlayImage.appendChild(this.div)
-                    }
+                        this.div.classList.add('marker');
+                        $(this.div).attr('id', `marker-${this.id}`);
+                        this.div.style.position = 'absolute';
+                        this.div.innerHTML = '<img class="imgMarker" src="' + this.iconSrc + '"alt="image marker" />';
+                        this.getPanes().overlayImage.appendChild(this.div);
+                        // Animation de l'apparition des marqueurs 
+                        $(this.div).css('opacity', '0').css('margin-top', '-100px');
+                        $(this.div).animate({opacity:'1', marginTop:'-60px'}, 700);                   
+                    };
                 
                     draw () {
-                        let position = this.getProjection().fromLatLngToDivPixel(this.pos)
-                        this.div.style.left = position.x + "px"
-                        this.div.style.top = position.y + "px"
-                    }
+                        let position = this.getProjection().fromLatLngToDivPixel(this.pos);
+                        this.div.style.left = position.x + "px";
+                        this.div.style.top = position.y + "px";
+                    };
                 
                     onRemove () {
-                        this.div.parentNode.removeChild(this.div)
-                    }
+                        this.div.parentNode.removeChild(this.div);
+                    };
 
-                    activated() {
+                    activated(text) {
                         this.div.classList.add('is-active');
-                    }
+                        $('.marker.is-active').append("<p id='infoBulle'>" + text + "</p>");
+                    };
 
                     desactivated() {
                         this.div.classList.remove('is-active');
+                        $('#infoBulle').remove();
+                    };
+
+                    onClick(cb) {
+                        this.div.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            cb();
+                        });
+                    };
+
+                    onOffSurvol(text, cb) {
+                        $(this.div).hover(
+                            // Survol
+                            () => {
+                            this.activated(text);
+                            },
+                            // Départ
+                            () => {
+                                this.desactivated();
+                            }
+                        );
                     }
 
-                    // onSurvol() {
-                    //     this.div.classList.add('is-onSurvol');
-                    //     console.log('marqueur survolé');
-                    // }
-
-                    // offSurvol() {
-                    //     this.div.classList.remove('is-onSurvol');
-                    // }
                 } // Fin class RestoMarker
                 
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
-                    zoom: 14,
+                    zoom: 15,
+                    mapId: '455789ea7a0a6e59',
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
+                    scrollwheel: true,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
                         },
@@ -81,6 +101,7 @@ class GoogleMap {
                         style: google.maps.NavigationControlStyle.ZOOM_PAN
                     }
                 });
+                this.bounds = new google.maps.LatLngBounds();
                 resolve();
             });
         });
@@ -98,9 +119,10 @@ class GoogleMap {
                     lng: pos.coords.longitude
                 }
                 //Centrage de la map sur l'user
-                this.map.panTo(this.userPosition);
+                this.map.setCenter(this.userPosition);
                 // Ajout du marker de l'user
                 const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
+                markerUser.onOffSurvol('Vous');
                 resolve();
             });
         });
@@ -117,7 +139,16 @@ class GoogleMap {
     addMarker(id, lat, lng, iconSrc) {
         let coord = new google.maps.LatLng(lat, lng);
         let marker = new this.restoMarker(coord, this.map, id, iconSrc);
+        //$(this.map).gmap('set', 'bounds', null)
+        //this.bounds.extend(coord);
         return marker;
+    }
+
+    // Centre la map pour englober les marqueurs
+    centerMap() {
+        // this.map.panTo(this.userPosition);
+        this.map.panToBounds(this.bounds);
+        // this.map.fitBounds(this.bounds);
     }
 
 } // Fin class GoogleMap

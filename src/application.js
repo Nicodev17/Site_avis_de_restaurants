@@ -14,18 +14,15 @@ class Application {
   ----------------------------------------------------------------------*/
   async getResto(mapCenter) {
     let mapClass = this.mapClass;
-    // await mapClass.load(zoneMap);
-    // await mapClass.geoloc();
+    let center = mapCenter;
     this.arrayRestaurants = [];
 
-    let center = mapCenter;
-
+    // Switch centre de la map si drag ou non
     if (center == undefined) {
       center = mapClass.userPosition;
     } else {
       center = mapCenter;
     }
-    // console.log(center);
 
     // ----- API Google Places -----
     let request = {
@@ -41,7 +38,6 @@ class Application {
         service.nearbySearch(request, (results, status) => {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             let place = results;
-            // console.log(place);
             // console.log(place[0]);
             res(place);
           }
@@ -51,13 +47,14 @@ class Application {
   
     let places = await getPlaces(service);
   
-    // Pour chaque item reçu => Création d'un objet restaurant contenant ses propres méthodes d'instance
+    // Pour chaque item reçu => Création d'un objet restaurant
     places.forEach((element, index) => {
       // Récupération de la photo du lieu
       let urlPhoto;
       let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${element.geometry.location.lat()},${element.geometry.location.lng()}&fov=80&heading=70&pitch=0&key=${apiKey}`;
   
+      // Switch si aucune photo sur le lieu = utilisation de la photo streetview
       if (element.photos == undefined) {
         urlPhoto = urlStreetView;
       } else {
@@ -78,7 +75,7 @@ class Application {
   
   } // Fin fonction getResto
 
-  /* ---- Lancement de la fonction de récupération d'avis de Places Details ---- */
+  /* ---- Récupération d'avis de Places Details pour chaque instance d'objet restaurant ---- */
   async getingRatings() {
     for (let i = 0; i < this.arrayRestaurants.length; i++) {
       let item = this.arrayRestaurants[i];
@@ -90,7 +87,7 @@ class Application {
   ----|| Filtrage des restos selon leur moyenne et leur emplacement ||----
   ----------------------------------------------------------------------*/
 
-  /* ----- Création du slider de filtrage des notes ---- */
+  /* ----- Création du slider de filtrage ---- */
   sliderInit() {
     $("#slider-range").slider({
       range: true,
@@ -105,27 +102,25 @@ class Application {
       " & " + $("#slider-range").slider("values", 1));
   }; // Fin fonction sliderInit
 
+  /* ---- Déplacement du centre de la map au drag ---- */ 
   async moveMap() {
     let mapClass = this.mapClass;
 
-   // Event du drag de la map
+   // Event drag
     mapClass.map.addListener("dragend", async () => {
-      console.log('la map bouge !');
 
       let newCenterMap = {
         lat: mapClass.map.getCenter().lat(),
         lng: mapClass.map.getCenter().lng()
       }
-      // console.log(newCenterMap);
 
-      // Relancement de la fonction getResto avec le nouveau centre
+      // Relancement de getResto() avec le nouveau centre
       await this.getResto(newCenterMap);
     });
-  }
+  } // Fin fonction moveMap
 
-  /* ---- Filtrage selon les notes et le déplacement de la map ---- */ 
- filter() {
-    // Event du filtrage selon les notes
+  /* ---- Filtrage selon les notes ---- */ 
+  filter() {
     $("#slider-range").on("slide", (event, ui) => {
       let value1 = ui.values[0];
       let value2 = ui.values[1];
@@ -136,10 +131,8 @@ class Application {
       // maj de la liste
       $('#zoneListe ul').empty();
 
-      // On relance la fonction initDisplayResto avec les resto filtrés
       this.initDisplayResto(this.filteredArray);
     });
-
   } // Fin fonction filter
 
   /*----------------------------------------------------------------------
@@ -156,7 +149,7 @@ class Application {
       // Efface les marqueurs précèdents sauf celui de l'user
       $('.marker').filter(":not(#marker-200)").remove();
       
-      // ---- Création des marqueurs ----
+      // ---- Création des nouveaux marqueurs ----
       let idMarker = i;
       let marker = mapClass.addMarker(idMarker, item.position.lat, item.position.lon, 'media/icon_marker.png');
       this.arrayMarkers.push(marker);
@@ -164,36 +157,30 @@ class Application {
       // Adaptation de la map
       // mapClass.centerMap();
 
-      // ---- Affichage dans la liste de droite ----
+      // -- Affichage dans la liste de droite
       item.displayRestoList();
 
-      // Catch de chaque item de liste présents
+      // Catch individuel de chaque item de liste
       let listItem = $('#zoneListe li:eq(' + i + ')');
 
-      // Appel de la fonction du comportement des marqueurs au survol d'un item de la liste
+      // -- Marqueur au survol d'un item de liste
       item.markerEventHover(item, marker, listItem);
 
-      // ---- Comportement d'un marqueur au clic direct ----
-      marker.onClick(() => {
-        // On relance les fonctions du pop up
-        this.displayInfoPop(item);
-        this.addingRate(item, i);
-      });
-
-      // ---- Comportement d'un marqueur à son survol direct sur la map ----
+      // -- Marqueur à son survol direct sur la map
       marker.onOffSurvol(item.name);
 
-      // ---- POP UP FENETRE INFOS ----
-      listItem.click(() => {
-        // Appel de la fonction de gestion du popup
+      // -- Apparition POP UP au clic sur un marqueur
+      marker.onClick(() => {
         this.displayInfoPop(item);
-
-        // Appel de la fonction d'ajout d'avis
         this.addingRate(item, i);
       });
 
-    } // Fin boucle for
-
+      // -- Apparition POP UP au clic sur un item de liste
+      listItem.click(() => {
+        this.displayInfoPop(item);
+        this.addingRate(item, i);
+      })
+    }
   } // Fin fonction initDisplayResto
 
   /*----------------------------------------------------------------------
@@ -269,16 +256,14 @@ class Application {
 
         alert('Votre commentaire a été envoyé !');
 
-        // Envoi des infos dans la fonction d'ajout d'avis (méthode de la classe restaurant)
+        // Envoi des infos dans la fonction d'ajout d'avis
         item.addRating(noteEnter, commentEnter);
-
-        //console.table(this.arrayRestaurants);
 
         // Rafraichissement de l'affichage
         let totalReviews = item.ratingsTotal += 1;
         $('.ratingItem').remove();
         $('#dots').addClass('fa fa-ellipsis-v');
-        // Maj du nb d'avis et de la note dans la liste de droite
+        // Maj du nb d'avis et de la note dans la liste
         $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5 <strong> ★</strong>' + ' (' + totalReviews + ' avis)');
         this.displayInfoPop(item);
 
@@ -331,17 +316,18 @@ class Application {
     mapClass.map.addListener("rightclick", async (e) => {
       let latClick = e.latLng.lat();
       let longClick = e.latLng.lng();
+      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
 
-      // Prend le nombre de restos existants pour faire suivre l'id du new resto
+      // id du new resto suivant ceux existants
       let growId = this.arrayRestaurants.length;
 
-      // Requete pour obtenir l'adresse à partir de la position
-      const adressRequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latClick},${longClick}&key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k`)
+      // Obtention de l'adresse à partir de la position du clic
+      const adressRequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latClick},${longClick}&key=${apiKey}`)
         .then(resultat => resultat.json())
         .then(json => json)
       const newRestoAdress = adressRequest.results[0].formatted_address;
 
-      // -- Formulaire (à améliorer)
+      // -- Formulaire d'ajout de resto
       const newRestoName = prompt('Entrez le nom du restaurant que vous souhaitez ajouter', "Nom du restaurant");
       let newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
       while (newRestoNote < 0 || newRestoNote > 5 || isNaN(newRestoNote) === true) {
@@ -349,23 +335,19 @@ class Application {
         newRestoNote = Number(prompt('Entrez la note que vous souhaitez attribuer (0 à 5)', "Votre note"));
       };
       const newRestoComment = prompt('Entrez le commentaire que vous souhaitez laisser sur ce restaurant', "Votre commentaire");
-      // -- fin formulaire
+      // -- Fin formulaire
 
-      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${latClick},${longClick}&fov=80&heading=70&pitch=0&key=${apiKey}`;
 
       // Création du nouvel objet restaurant
       const restoAdded = new Restaurant(growId, newRestoName, urlStreetView, newRestoAdress, latClick, longClick, null, [{ rating: newRestoNote, text: String(newRestoComment) }], 1, newRestoNote);
-      console.log(restoAdded);
-
+      
       // Ajout au tableau des restaurants
       this.arrayRestaurants.push(restoAdded);
-      // console.log(this.arrayRestaurants);
 
-      // Création du marqueur
+      // Création du nouveau marqueur
       let marker = mapClass.addMarker(growId, latClick, longClick, 'media/icon_marker_added.png');
       this.arrayMarkers.push(marker);
-      // console.log(this.arrayMarkers);
 
       // Ajout dans la liste
       restoAdded.displayRestoList();
@@ -373,22 +355,20 @@ class Application {
       // Scroll auto en bas de la liste
       $('#zoneListe ul')[0].scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
 
-      // On relance les fonctions du comportement des marqueurs au survol et au clic
+      // Comportement des marqueurs au survol et au clic
       let listItem = $('#zoneListe li:last-child');
-      restoAdded.markerEventHover(restoAdded, marker, listItem);
       marker.onOffSurvol(restoAdded.name);
       marker.onClick(() => {
-        console.log(restoAdded.name);
-        // On relance les fonctions du pop up
         this.displayInfoPop(restoAdded);
         this.addingRate(restoAdded, growId);
       });
 
+      // Au survol du nouvel item de liste
+      restoAdded.markerEventHover(restoAdded, marker, listItem);
+
       // Au clic sur le nouvel item de liste
       listItem.click(() => {
-        // Lancement fonction du pop up
         this.displayInfoPop(restoAdded);
-        // Fonction d'ajout d'avis
         this.addingRate(restoAdded, growId);
       });
 

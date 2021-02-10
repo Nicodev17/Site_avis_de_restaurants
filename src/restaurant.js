@@ -25,32 +25,49 @@ class Restaurant {
 
   // ---- Méthode pour récupérer les avis ----
   async getRatings() {
+    let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+    
+    const url = `https://fierce-shore-24774.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.placeId}&fields=name,rating,review,user_ratings_total&key=${apiKey}`; 
+    
+    // ------------------------------------------------------------------------
+    function getDetails() {
+      return new Promise((resolve, reject) => {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            resolve(response);
+          } else {
+            // console.log("error");
+          }
+        };
+        xhttp.open("GET", url);
+        xhttp.send();
+      });
+    }
+  
+    const details = await getDetails();
+    // ------------------------------------------------------------------------
 
-      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+    const detailsReviews = details.result;
+    // console.log(detailsReviews);
 
-      const requestDetails = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.placeId}&fields=name,rating,review,user_ratings_total&key=${apiKey}`)
-      .then(resultat => resultat.json())
-      .then(json => json)
+    const reviews = details.result.reviews;
+    // console.log(reviews);
 
-      const response = requestDetails.result;
-      //console.log(response);
+    const ratingsTotal = detailsReviews.user_ratings_total;
 
-      const reviews = requestDetails.result.reviews;
-      // console.log(reviews);
+    const average = detailsReviews.rating;
 
-      const ratingsTotal = response.user_ratings_total;
-
-      const average = response.rating;
-
-      if(reviews === undefined) {
-        this.ratings = [];
-        this.ratingsTotal = 0;
-        this.average = 0;
-      } else {
-        this.ratings = reviews;
-        this.ratingsTotal = ratingsTotal;
-        this.average = average;
-      }
+    if(reviews === undefined) {
+      this.ratings = [];
+      this.ratingsTotal = 0;
+      this.average = 0;
+    } else {
+      this.ratings = reviews;
+      this.ratingsTotal = ratingsTotal;
+      this.average = average;
+    }
   }
   
   // ---- Méthode pour ajouter un avis (note + com) ----

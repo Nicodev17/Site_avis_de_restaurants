@@ -267,10 +267,33 @@ strong {
     height: 490px;
     margin-bottom: 180px;
     background-color: #ffffff;
-    border: 4px solid rgb(207, 207, 207);
+    /* border: 4px solid rgb(207, 207, 207); */
+    border-radius: 15px;
     overflow-y: scroll;
     font-family: Arial, Helvetica, sans-serif;
     z-index: 300;
+}
+
+#infoResto::-webkit-scrollbar {
+    width: 8px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 0 15px 15px 0;
+}
+
+#infoResto::-webkit-scrollbar-button:start:decrement,
+#infoResto::-webkit-scrollbar-button:end:increment {
+display: block;
+height: 15px;
+}
+
+/* #infoResto::-webkit-scrollbar-button:vertical:decrement,
+#infoResto::-webkit-scrollbar-button:vertical:increment {
+background-color: rgb(136, 136, 136);
+} */
+
+#infoResto::-webkit-scrollbar-thumb {
+    background-color: rgb(136, 136, 136);
+    border-radius: 5px;
 }
 
 /* Bouton fermeture */
@@ -302,8 +325,13 @@ strong {
 h3 {
     color: #e64f2a;
     text-align: center;
-    margin-top: 5px;
+    padding-top: 20px;
+    
+    margin-top: -15px;
     font-size: 27px;
+    height: 50px;
+    background-color: rgb(224, 224, 224);
+    border-bottom: 4px solid rgb(197, 197, 197);
 }
 
 #separatePop {

@@ -24,40 +24,29 @@ class Restaurant {
   }
 
   // ---- Méthode pour récupérer les avis ----
-  async getRatings() {
-    let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+  async getRatings(service) { 
     
-    const url = `https://fierce-shore-24774.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.placeId}&fields=name,rating,review,user_ratings_total&key=${apiKey}`; 
-    
-    // ------------------------------------------------------------------------
-    function getDetails() {
-      return new Promise((resolve, reject) => {
-        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            let response = JSON.parse(this.responseText);
-            resolve(response);
-          } else {
-            // console.log("error");
+    // Fonction getDetails se basant sur le service de google places
+    function getReviews(service, placeId) {
+      return new Promise((res, rej) => {
+        service.getDetails({placeId: placeId}, (results, status) => {
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            let detail = results;
+            // console.log(detail);
+            res(detail);
           }
-        };
-        xhttp.open("GET", url);
-        xhttp.send();
+        });
       });
-    }
-  
-    const details = await getDetails();
-    // ------------------------------------------------------------------------
+    }    
+    
+    let details = await getReviews(service, this.placeId);
 
-    const detailsReviews = details.result;
-    // console.log(detailsReviews);
-
-    const reviews = details.result.reviews;
+    const reviews = details.reviews;
     // console.log(reviews);
 
-    const ratingsTotal = detailsReviews.user_ratings_total;
+    const ratingsTotal = details.user_ratings_total;
 
-    const average = detailsReviews.rating;
+    const average = details.rating;
 
     if(reviews === undefined) {
       this.ratings = [];

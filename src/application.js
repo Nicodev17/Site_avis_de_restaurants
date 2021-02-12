@@ -44,42 +44,43 @@ class Application {
         });
       });
     }
-  
+    
     let places = await getPlaces(service);
-  
+    
     // Pour chaque item reçu => Création d'un objet restaurant
     places.forEach((element, index) => {
       // Récupération de la photo du lieu
       let urlPhoto;
       let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${element.geometry.location.lat()},${element.geometry.location.lng()}&fov=80&heading=70&pitch=0&key=${apiKey}`;
-  
+      
       // Switch si aucune photo sur le lieu = utilisation de la photo streetview
       if (element.photos == undefined) {
         urlPhoto = urlStreetView;
       } else {
         urlPhoto = element.photos[0].getUrl();
       }
-  
+      
       // ** Constructor : id, name, urlPhoto, address, lat, lon, placeId, ratings, ratingsTotal, average **
       const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.user_ratings_total, element.rating);
       this.arrayRestaurants.push(restaurant);
     });
-  
+
     // Tableau de base des restaurants (sortie de requete)
     console.log(this.arrayRestaurants);
 
-    this.getingRatings();
+    // Passage de l'objet PlacesService de google
+    this.getingRatings(service);
 
     await this.initDisplayResto(this.arrayRestaurants);
   
   } // Fin fonction getResto
 
   /* ---- Récupération d'avis de Places Details pour chaque instance d'objet restaurant ---- */
-  async getingRatings() {
+  async getingRatings(service) {
     for (let i = 0; i < this.arrayRestaurants.length; i++) {
       let item = this.arrayRestaurants[i];
-      await item.getRatings();
+      await item.getRatings(service);
     }
   }
 
@@ -215,6 +216,8 @@ class Application {
     // Fermeture du popup
     $('#buttonClose , #overlayBack').click(() => {
 
+      // Réinitialisation du scroll
+      $('#infoResto').scrollTop(0);
       $('#overlay').css('display', 'none');
       $('#overlayBack').css('display', 'none');
       $('.ratingItem').remove();

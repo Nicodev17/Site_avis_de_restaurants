@@ -12,10 +12,9 @@ class Application {
   /*----------------------------------------------------------------------
   ---------|| Requête pour récupérer les restos (API Places) ||-----------
   ----------------------------------------------------------------------*/
-  async getResto(mapCenter) {
+  getResto(mapCenter) {
     let mapClass = this.mapClass;
     let center = mapCenter;
-    this.arrayRestaurants = [];
 
     // Switch centre de la map si drag ou non
     if (center == undefined) {
@@ -32,29 +31,32 @@ class Application {
     };
   
     let service = new google.maps.places.PlacesService(mapClass.map);
-  
-    function getPlaces(service) {
-      return new Promise((res, rej) => {
-        service.nearbySearch(request, (results, status) => {
-          if (status == google.maps.places.PlacesServiceStatus.OK) {
-            let place = results;
-            // console.log(place[0]);
-            res(place);
-          }
-        });
-      });
-    }
+
+    service.nearbySearch(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        let places = results;
+        // Lancement fonction création des objets
+        this.initResto(places, service, status);
+      }
+    });
+  } // Fin fonction getResto
+
+  /*----------------------------------------------------------------------
+  -----------|| Fonction initialisant les objets Restaurant ||------------
+  ----------------------------------------------------------------------*/
+  initResto(places, service, status) {
+    let mapClass = this.mapClass;
+    this.arrayRestaurants = [];
     
-    let places = await getPlaces(service);
-    
-    // Pour chaque item reçu => Création d'un objet restaurant
+    // Création d'un objet restaurant pour chaque item reçu de la requete
     places.forEach((element, index) => {
-      // Récupération de la photo du lieu
+
+      // Récupération de la photo
       let urlPhoto;
       let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${element.geometry.location.lat()},${element.geometry.location.lng()}&fov=80&heading=70&pitch=0&key=${apiKey}`;
       
-      // Switch si aucune photo sur le lieu = utilisation de la photo streetview
+      // Si aucune photo = utilisation de la photo streetview
       if (element.photos == undefined) {
         urlPhoto = urlStreetView;
       } else {
@@ -62,27 +64,22 @@ class Application {
       }
       
       // ** Constructor : id, name, urlPhoto, address, lat, lon, placeId, ratings, ratingsTotal, average **
-      const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.rating, element.user_ratings_total, element.rating);
+      const restaurant = new Restaurant(index, element.name, urlPhoto, element.vicinity, element.geometry.location.lat(), element.geometry.location.lng(), element.place_id, element.ratings, element.user_ratings_total, element.rating);
       this.arrayRestaurants.push(restaurant);
     });
 
-    // Tableau de base des restaurants (sortie de requete)
+    // Tableau de base des objets Restaurant
     console.log(this.arrayRestaurants);
 
-    // Passage de l'objet PlacesService de google
-    this.getingRatings(service);
-
-    await this.initDisplayResto(this.arrayRestaurants);
-  
-  } // Fin fonction getResto
-
-  /* ---- Récupération d'avis de Places Details pour chaque instance d'objet restaurant ---- */
-  async getingRatings(service) {
+    // Récupération des avis pour chaque objet resto
     for (let i = 0; i < this.arrayRestaurants.length; i++) {
       let item = this.arrayRestaurants[i];
-      await item.getRatings(service);
+      item.getRatings(service, status);
     }
-  }
+
+    this.initDisplayResto(this.arrayRestaurants);
+  
+  } // Fin fonction getResto
 
   /*----------------------------------------------------------------------
   ----|| Filtrage des restos selon leur moyenne et leur emplacement ||----
@@ -277,26 +274,6 @@ class Application {
         // Réinitialisation du formulaire
         $('#formulaire').get(0).reset();
         $('#formAvis').off();
-
-        // Suppression de com (NON FONCTIONNELLE)
-        // $('#dots').click(function () {
-        //   let dotsClicked = true;
-        //   $('#bulleSuppr').css('display', 'flex');
-
-        //   $('#dots').append('<div id="bulleSuppr"> <button id="buttonSuppr"> Supprimer ce commentaire </button> </div>');
-        //   $('#buttonSuppr').click(function () {
-        //     console.log('suppression du com');
-        //   })
-
-        //   if (dotsClicked == true) {
-        //     $('#dots').click(function () {
-        //       console.log('TEST');
-        //       $('#bulleSuppr').css('display', 'none');
-        //     });
-        //     $('#dots').off();
-        //     dotsClicked = false;
-        //   }
-        // });
       });
 
       // Annulation de l'envoi de com

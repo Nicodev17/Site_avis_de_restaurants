@@ -10,6 +10,20 @@ body {
     position: relative;
 }
 
+/* Erreur géolocalisation refusée */
+#error {
+    font-family: sans-serif ;
+    color: #aa3728;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    background-color: rgb(194, 194, 194);
+    border: rgb(114, 114, 114);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+}
+
 /* ---- BARRE DU HEADER ---- */
 header {
     width: 100%;
@@ -149,6 +163,24 @@ bold {
     border-left: 2px solid rgb(182, 182, 182);
 }
 
+/* Zone du scroll */
+#zoneListe::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgb(214, 214, 214);
+}
+
+#zoneListe::-webkit-scrollbar-button:start:decrement,
+#zoneListe::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 15px;
+}
+
+/* Barre de scroll */
+#zoneListe::-webkit-scrollbar-thumb {
+    background-color: rgb(148, 148, 148);
+    border-radius: 5px;
+}
+
 #zoneListe li {
     height: auto;
     border: 4px solid #e4e4e4;
@@ -268,12 +300,13 @@ strong {
     margin-bottom: 180px;
     background-color: #ffffff;
     /* border: 4px solid rgb(207, 207, 207); */
-    border-radius: 15px;
+    border-radius: 15px 10px 10px 15px;
     overflow-y: scroll;
     font-family: Arial, Helvetica, sans-serif;
     z-index: 300;
 }
 
+/* Zone du scroll */
 #infoResto::-webkit-scrollbar {
     width: 8px;
     background-color: rgb(214, 214, 214);
@@ -282,15 +315,11 @@ strong {
 
 #infoResto::-webkit-scrollbar-button:start:decrement,
 #infoResto::-webkit-scrollbar-button:end:increment {
-display: block;
-height: 15px;
+    display: block;
+    height: 15px;
 }
 
-/* #infoResto::-webkit-scrollbar-button:vertical:decrement,
-#infoResto::-webkit-scrollbar-button:vertical:increment {
-background-color: rgb(136, 136, 136);
-} */
-
+/* Barre de scroll */
 #infoResto::-webkit-scrollbar-thumb {
     background-color: rgb(136, 136, 136);
     border-radius: 5px;
@@ -325,13 +354,14 @@ background-color: rgb(136, 136, 136);
 h3 {
     color: #e64f2a;
     text-align: center;
+    text-transform: capitalize;
     padding-top: 20px;
     
     margin-top: -15px;
     font-size: 27px;
     height: 50px;
     background-color: rgb(224, 224, 224);
-    border-bottom: 4px solid rgb(197, 197, 197);
+    border-bottom: 4px solid #fbb13bd3;
 }
 
 #separatePop {
@@ -620,6 +650,10 @@ margin-left: -55px;
     html {
         overflow-x: hidden;
     }
+
+    #error {
+        font-size: 0.8em;
+    }
     
     /* Overlay Pop Up */
     #infoResto {
@@ -702,6 +736,13 @@ margin-left: -55px;
         overflow-x: hidden;
     }
 
+    #error {
+        text-align: left;
+        padding: 8px;
+        margin: 12px;
+        font-size: 0.7em;
+    }
+
     /* ---- BARRE DU HEADER ---- */
     #zoneTitre {
         margin-left: 15px;
@@ -714,11 +755,11 @@ margin-left: -55px;
     }
 
     h1 {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
 
     h2 {
-        font-size: 0.95em;
+        font-size: 0.72em;
         margin-right: 20px;
         margin-left: 20px;
     }
@@ -733,20 +774,22 @@ margin-left: -55px;
     #zoneRange {
         margin-top: -15px;
         flex-direction: column;
+        align-items: center;
     }
 
     #zoneRange p {
-        font-size: 0.88em;
-        margin-right: 25px;
+        font-size: 0.75em;
+        margin-right: 35px;
     }
 
     #contentRange {
         margin-right: 40px;
         margin-top: -20px;
+        width: 100px;
     }
 
     #note {
-        font-size: 0.85em;
+        font-size: 0.75em;
     }
 
     /* Zone info du clic sur la map */
@@ -755,12 +798,14 @@ margin-left: -55px;
     }
     
     #textInfo {
-        font-size: 0.88em;
+        font-size: 0.75em;
         font-weight: bold;
+        margin-right: 30px;
     }
 
     /* ZONE LISTE */
     #zoneListe li {
+        width: auto;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -774,18 +819,17 @@ margin-left: -55px;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        /* border: 3px solid rgb(188, 35, 202); */
     }
     
     /* Nom du resto */
     h4 {
-        font-size: 0.93em;
+        font-size: 0.7em;
         text-align: center;
-        padding-left: 40px;
+        padding-left: 30px;
     }
     
     .restoNote {
-        font-size: 0.88em;
+        font-size: 0.7em;
         margin-top: 0px;
         padding-left: 30px;
         text-align: center;
@@ -806,8 +850,8 @@ margin-left: -55px;
     }
     
     .photoList {
-        width: 90px;
-        height: 60px;
+        width: 60px;
+        height: 35px;
     }
     /* Fin zone liste */
 
@@ -818,17 +862,43 @@ margin-left: -55px;
     }
 
     h3 {
+        padding-top: 25px;
         font-size: 20px;
     }
 
+    #adresseResto p {
+        font-size: 0.9em;
+    }
+
+    #noteMoyenne p {
+        font-size: 0.9em;
+        margin-top: 30px;
+        padding: 0 30px 0 30px
+    }
+
+    #noteMoyenne p strong {
+        display: none;
+    }
+
+    #iconRate img {
+        width: 45px;
+        height: auto;
+    }
+
+    #titleAvis {
+        font-size: 0.88em;
+        padding-left: 10px;
+    }
+
     .ratingItem p {
-        font-size: 0.85em;
+        font-size: 0.8em;
         color: rgb(82, 82, 82);
+        padding-left: 15px;
     }
 
     #contentZoneAvis {
-        padding: 0 0 0 20px;
-        width: 70%;
+        padding: 0 0px 0 0px;
+        width: 90%;
     }
 
     #buttonClose img{

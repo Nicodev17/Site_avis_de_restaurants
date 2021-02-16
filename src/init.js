@@ -1,14 +1,15 @@
 /*----------------------------------------------------------------------
--------|| Initialisation des objets et appel des fonctions  ||----------
+-------------|| Initialisation et appel des fonctions  ||---------------
 ----------------------------------------------------------------------*/
 
+// Animation au load de la page
 window.addEventListener("load", function() {
     $('h1').animate({opacity:'1'}, 1000);  
     $('#logo').css('margin-top', '-200px');
     $('#logo').animate({marginTop:'0px', opacity:'1'}, 800);
 });
 
-
+// Initialisation des fonctions de l'appli
 async function init() {
     let mapClass = new GoogleMap();
     await mapClass.load(zoneMap);
@@ -22,7 +23,6 @@ async function init() {
     newApplication.filter();
     newApplication.addResto();
 }
-
 init();
 
 

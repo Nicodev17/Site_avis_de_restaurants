@@ -12,6 +12,8 @@ class Restaurant {
       this.ratings = ratings;
       this.ratingsTotal = ratingsTotal;
       this.average = average;
+      this.website;
+      this.phone;
   }
 
   // ---- Méthode pour calculer la moyenne des notes de tous les avis d'un resto ----
@@ -24,33 +26,43 @@ class Restaurant {
   }
 
   // ---- Méthode pour récupérer les avis ----
-  async getRatings() {
+  async getDetails(mapClass) {
 
-      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+    let request = {
+      placeId: this.placeId,
+      fields: ['name', 'rating', 'user_ratings_total', 'reviews', 'formatted_phone_number', 'website']
+    }
 
-      const requestDetails = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.placeId}&fields=name,rating,review,user_ratings_total&key=${apiKey}`)
-      .then(resultat => resultat.json())
-      .then(json => json)
+    let service = new google.maps.places.PlacesService(mapClass.map);
 
-      const response = requestDetails.result;
-      //console.log(response);
+    function getReviews(service) {
+      return new Promise((res, rej) => {
+        service.getDetails(request, (results, status) => {
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            res(results);
+          }
+        });
+      });
+    }
 
-      const reviews = requestDetails.result.reviews;
-      // console.log(reviews);
+    let details = await getReviews(service);
 
-      const ratingsTotal = response.user_ratings_total;
+    const reviews = details.reviews;
+    const ratingsTotal = details.user_ratings_total;
+    const average = details.rating;
+    
+    if(reviews == null) {
+      this.ratings = [];
+      this.ratingsTotal = 0;
+      this.average = 0;
+    } else {
+      this.ratings = reviews;
+      this.ratingsTotal = ratingsTotal;
+      this.average = average;
+    }
 
-      const average = response.rating;
-
-      if(reviews === undefined) {
-        this.ratings = [];
-        this.ratingsTotal = 0;
-        this.average = 0;
-      } else {
-        this.ratings = reviews;
-        this.ratingsTotal = ratingsTotal;
-        this.average = average;
-      }
+    this.website = details.website;
+    this.phone = details.formatted_phone_number;
   }
   
   // ---- Méthode pour ajouter un avis (note + com) ----

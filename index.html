@@ -22,7 +22,7 @@
             <img id="logo" src="media/logo_vicino_resto.png" alt="logo vicino resto">
             <h1> VICINO RESTO </h1>
         </div>
-        <h2>AVIS DE RESTAURANTS PRÈS DE CHEZ VOUS !</h2>
+        <h2>AVIS DE RESTAURANTS PRES DE CHEZ VOUS !</h2>
     </header>
     
     <!-- Fenetre pop up -->
@@ -39,16 +39,14 @@
 
             <h3> Nom resto </h3>
 
-            <hr id="separatePop">
-            
-            <!-- <div id="iconCook">
-                <img src="media/cooking.png" alt="image de cuisto">
-            </div> -->
-
             <div id="photoResto"> </div>
 
             <div id="adresseResto">
                 <p> Adresse : XXXX </p>
+            </div>
+
+            <div id="infoContact">
+                <p> site / tel </p>
             </div>
 
             <div id="noteMoyenne">
@@ -89,12 +87,13 @@
 
     <div id="zoneInfo">
         <div id="zoneInfoClic">
-            <p id="textInfo">Faites un <bold>clic-droit</bold> sur la carte pour ajouter un nouveau restaurant </p>
-            <img src="media/mouse.png" id="iconMouse" alt="icon mouse">
+            <p id="textInfo"> Ajoutez un restaurant :<bold> Clic-droit</bold> sur la carte 
+                <img src="media/mouse.png" id="iconMouse" alt="icon mouse">
+            </p>
         </div>
         
         <div id="zoneRange">
-            <p> <bold>Filtrez</bold> les restaurants 🔍 </p>
+            <p> <bold>Filtrez</bold> les restaurants</p>
             <div id="contentRange"> 
                 <input type="text" readonly="readonly" id="note">
                 <div id="slider-range"> </div>
@@ -123,7 +122,6 @@
     <script src="src/map.js"></script>
     <script src="src/application.js"></script>
     <script src="src/restaurant.js"></script>
-    <script src="src/items.json"></script>
     <script src="src/init.js"></script>
 </body>
 

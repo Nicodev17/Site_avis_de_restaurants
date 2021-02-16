@@ -10,6 +10,20 @@ body {
     position: relative;
 }
 
+/* Erreur géolocalisation refusée */
+#error {
+    font-family: sans-serif ;
+    color: #aa3728;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    background-color: rgb(194, 194, 194);
+    border: rgb(114, 114, 114);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+}
+
 /* ---- BARRE DU HEADER ---- */
 header {
     width: 100%;
@@ -24,7 +38,7 @@ header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: 50px;
+    margin-left: 35px;
 }
 
 #logo {
@@ -85,12 +99,13 @@ h2 {
 }
 
 #note {
+    position: relative;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.88em;
     font-weight: bold;
     color: #e64f2a;
-    background-color: #eeeeee;
+    background-color: #eeeeee00;
     margin-bottom: 10px;
     border: 0;
     outline-style : none;
@@ -108,6 +123,7 @@ h2 {
     color: rgb(88, 88, 88);
     font-size: 1em;
     font-weight: bold;
+    margin-right: 90px;
 }
 
 bold {
@@ -118,8 +134,8 @@ bold {
 #iconMouse {
     width: 20px;
     height: auto;
-    margin-left: 7px;
-    margin-right: 50px;
+    margin-left: 4px;
+    margin-bottom: -5px;
 }
 
 /* ---- ZONE D'AFFICHAGE DU CONTENU ---- */
@@ -147,8 +163,26 @@ bold {
     border-left: 2px solid rgb(182, 182, 182);
 }
 
+/* Zone du scroll */
+#zoneListe::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgb(214, 214, 214);
+}
+
+#zoneListe::-webkit-scrollbar-button:start:decrement,
+#zoneListe::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 15px;
+}
+
+/* Barre de scroll */
+#zoneListe::-webkit-scrollbar-thumb {
+    background-color: rgb(148, 148, 148);
+    border-radius: 5px;
+}
+
 #zoneListe li {
-    height: 130px;
+    height: auto;
     border: 4px solid #e4e4e4;
     border-radius: 6px;
     margin-top: 20px;
@@ -176,7 +210,6 @@ bold {
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-    padding: 10px;
     margin-top: -10px;
 }
 
@@ -184,26 +217,29 @@ h4 {
     font-family: Arial, Helvetica, sans-serif;
     text-transform: capitalize;
     color: #e64f2a;
-    font-size: 1.18em;
+    font-size: 1.1em;
     margin-bottom: 0px;
+    padding-left: 10px;
     text-align: right;
 }
 
 .restoAdress {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(88, 88, 88);
-    font-size: 0.91em;
+    font-size: 0.9em;
     text-align: right;
-    margin-top: 20px;
+    margin-top: 10px;
+    padding-left: 10px;
     text-align: right;
 }
 
 .restoNote {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #e64f2a;
-    font-size: 1em;
+    font-size: 0.95em;
     font-weight: bold;
     margin-top: -5px;
+    padding-left: 10px;
     text-align: right;
 }
 
@@ -220,12 +256,13 @@ strong {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    margin-left: 20px;
 }
 
 .photoList {
     width: 100%;
-    height: 90px;
+    height: 70%;
+    max-height: 90px;
     border: 4px solid rgb(207, 207, 207);
     border-radius: 5px;
 }
@@ -262,10 +299,30 @@ strong {
     height: 490px;
     margin-bottom: 180px;
     background-color: #ffffff;
-    border: 4px solid rgb(207, 207, 207);
+    /* border: 4px solid rgb(207, 207, 207); */
+    border-radius: 15px 10px 10px 15px;
     overflow-y: scroll;
     font-family: Arial, Helvetica, sans-serif;
     z-index: 300;
+}
+
+/* Zone du scroll */
+#infoResto::-webkit-scrollbar {
+    width: 8px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 0 15px 15px 0;
+}
+
+#infoResto::-webkit-scrollbar-button:start:decrement,
+#infoResto::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 15px;
+}
+
+/* Barre de scroll */
+#infoResto::-webkit-scrollbar-thumb {
+    background-color: rgb(136, 136, 136);
+    border-radius: 5px;
 }
 
 /* Bouton fermeture */
@@ -297,8 +354,14 @@ strong {
 h3 {
     color: #e64f2a;
     text-align: center;
-    margin-top: 5px;
+    text-transform: capitalize;
+    padding-top: 20px;
+    
+    margin-top: -15px;
     font-size: 27px;
+    height: 50px;
+    background-color: rgb(224, 224, 224);
+    border-bottom: 4px solid #fbb13bd3;
 }
 
 #separatePop {
@@ -337,7 +400,23 @@ h3 {
     color: #4b4b4b;
     margin-top: 20px;
     padding: 0 30px 0 30px;
-    
+}
+
+#infoContact {
+    text-align: center;
+    color: #4b4b4b;
+    margin-top: 20px;
+    padding: 0 30px 0 30px;
+}
+
+#infoContact a {
+    color: #e64f2a;
+}
+
+#infoContact strong {
+    font-size: 1.5em;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #noteMoyenne p {
@@ -506,41 +585,6 @@ label {
     color: rgb(82, 82, 82);
 }
 
-/* Media Queries Overlay Pop Up */
-
-/* TABLETTE */
-@media screen and (max-width: 70em) {
-
-    #infoResto {
-        width: 50%;
-        margin-bottom: 200px;
-    }
-}
-
-
-/* SMARTPHONE */
-@media screen and (max-width: 50em) {
-
-    #infoResto {
-        width: 70%;
-        margin-bottom: 230px;
-    }
-
-    h3 {
-        font-size: 20px;
-    }
-
-    #buttonClose img{
-        width: 17px;
-        height: auto;
-    }
-
-    #closeBox {
-        margin-top: 10px;
-        margin-right: 10px;
-    }
-}
-
 /* ---- MARQUEURS DE LA MAP ---- */
 
 .marker {
@@ -613,4 +657,284 @@ margin-left: -55px;
 #footer p {
     font-family: Arial, Helvetica, sans-serif;
     color: rgb(114, 114, 114);
+}
+
+/* -------- MEDIA QUERIES RESPONSIVE -------- */
+
+/*** FORMAT TABLETTE ***/
+@media screen and (max-width: 1003px) {
+    html {
+        overflow-x: hidden;
+    }
+
+    #error {
+        font-size: 0.8em;
+    }
+    
+    /* Overlay Pop Up */
+    #infoResto {
+        width: 50%;
+        margin-bottom: 200px;
+    }
+    /* Fin overlay pop up */
+
+    /* Zone filtrage */
+    #note {
+        margin-top: 10px;
+    }
+
+    #zoneRange p {
+        margin-right: 20px;
+        text-align: center;
+    }
+
+    /* ---- ZONE DE LA LISTE ---- */
+
+    #zoneListe li {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .contentItem {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+    }
+    
+    /* Nom du resto */
+    h4 {
+        font-size: 0.98em;
+        margin-bottom: 0px;
+        margin-right: 30px;
+    }
+
+    .restoAdress {
+        font-size: 0.88em;
+        margin-top: 8px;
+        padding-left: 20px;
+        text-align: right;
+        margin-right: 30px;
+    }
+
+    .restoNote {
+        font-size: 0.88em;
+        margin-top: -10px;
+        margin-right: 30px;
+        padding-left: 10px;
+        text-align: center;
+    }
+
+    /* Photo du resto dans la liste */
+    .photoBox {
+        width: 60%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-bottom: 6px;
+    }
+
+    .photoList {
+        width: 100%;
+        height: 20%;
+        max-height: 100px;
+    }
+}
+
+/*** FORMAT SMARTPHONE ***/
+@media screen and (max-width: 680px) {
+
+    html {
+        overflow-x: hidden;
+    }
+
+    #error {
+        text-align: left;
+        padding: 8px;
+        margin: 12px;
+        font-size: 0.7em;
+    }
+
+    /* ---- BARRE DU HEADER ---- */
+    #zoneTitre {
+        margin-left: 15px;
+    }
+
+    #logo {
+        width: 45px;
+        height: auto;
+        opacity: 0;
+    }
+
+    h1 {
+        font-size: 1.1em;
+    }
+
+    h2 {
+        font-size: 0.72em;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+
+    /* ---- ZONE SOUS LE HEADER ---- */
+    #zoneInfo {
+        height: 80px;
+        padding-left: 30px;
+    }
+
+    /* Zone du filtrage */
+    #zoneRange {
+        margin-top: -15px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #zoneRange p {
+        font-size: 0.75em;
+        margin-right: 35px;
+    }
+
+    #contentRange {
+        margin-right: 40px;
+        margin-top: -20px;
+        width: 100px;
+    }
+
+    #note {
+        font-size: 0.75em;
+    }
+
+    /* Zone info du clic sur la map */
+    #zoneInfoClic {
+        margin-top: -8px;
+    }
+    
+    #textInfo {
+        font-size: 0.75em;
+        font-weight: bold;
+        margin-right: 30px;
+    }
+
+    /* ZONE LISTE */
+    #zoneListe li {
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .contentItem {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Nom du resto */
+    h4 {
+        font-size: 0.7em;
+        text-align: center;
+        padding-left: 30px;
+    }
+    
+    .restoNote {
+        font-size: 0.7em;
+        margin-top: 0px;
+        padding-left: 30px;
+        text-align: center;
+    }
+    
+    .restoAdress {
+        display: none;
+    }
+
+    /* Photo du resto dans la liste */
+    .photoBox {
+        width: 90px;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 20px;
+    }
+    
+    .photoList {
+        width: 60px;
+        height: 35px;
+    }
+    /* Fin zone liste */
+
+    /* Overlay Pop Up */
+    #infoResto {
+        width: 70%;
+        margin-bottom: 230px;
+    }
+
+    h3 {
+        padding-top: 25px;
+        font-size: 20px;
+    }
+
+    #adresseResto p {
+        font-size: 0.9em;
+    }
+
+    #infoContact {
+        font-size: 0.9em;
+    }
+
+    #infoContact strong {
+        font-size: 1em;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    #noteMoyenne p {
+        font-size: 0.9em;
+        margin-top: 30px;
+        padding: 0 30px 0 30px
+    }
+
+    #noteMoyenne p strong {
+        display: none;
+    }
+
+    #iconRate img {
+        width: 45px;
+        height: auto;
+    }
+
+    #titleAvis {
+        font-size: 0.88em;
+        padding-left: 10px;
+    }
+
+    .ratingItem p {
+        font-size: 0.8em;
+        color: rgb(82, 82, 82);
+        padding-left: 15px;
+    }
+
+    #contentZoneAvis {
+        padding: 0 0px 0 0px;
+        width: 90%;
+    }
+
+    #buttonClose img{
+        width: 17px;
+        height: auto;
+    }
+
+    #closeBox {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+    /* fin overlay pop up */
 }

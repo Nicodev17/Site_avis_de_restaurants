@@ -108,23 +108,42 @@ class GoogleMap {
     } // fin fonction load
 
 /*----------------------------------------------------------------------
--------------------|| Fonction de geolocalisation ||--------------------
+-------------|| Fonction de geolocalisation de l'user ||----------------
 ----------------------------------------------------------------------*/
     async geoloc() {
         return new Promise((resolve, reject) => {
-            //Géolocalisation de l'utilisateur via l'api JS
-            navigator.geolocation.getCurrentPosition((pos)=> {
-                this.userPosition = {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
-                }
-                //Centrage de la map sur l'user
-                this.map.setCenter(this.userPosition);
-                // Ajout du marker de l'user
-                const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
-                markerUser.onOffSurvol('Vous');
-                resolve();
-            });
+            if(navigator.geolocation) {
+                // Si la geoloc est possible sur le navigateur
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    this.userPosition = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    }
+                    //Centrage de la map sur l'user
+                    this.map.setCenter(this.userPosition);
+                    // Ajout du marker de l'user
+                    const markerUser = this.addMarker(200, this.userPosition.lat, this.userPosition.lng, 'media/person_icon.png');
+                    markerUser.onOffSurvol('Vous');
+                    resolve();
+                }, () => {
+                    // Geoloc refusée
+                    handleError(true);
+                });
+                
+            } else {
+                // Geoloc impossible sur le navigateur
+                handleError(false);
+            }
+
+            // Affichage de l'erreur
+            function handleError(status) {
+                let errorStatus = status ?
+                "Erreur : la géolocalisation est impossible. Service indisponible." :
+                "Le navigateur ne prend pas en charge la géolocalisation. Service indisponible."
+
+                alert(errorStatus);
+                $('#zoneListe').html('<p id="error"> Veuillez autoriser la géolocalisation dans votre navigateur et actualiser la page pour accéder aux données. </p>');
+            }
         });
     } // fin fonction geoloc
     

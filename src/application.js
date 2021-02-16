@@ -34,9 +34,8 @@ class Application {
 
     service.nearbySearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        let places = results;
         // Lancement fonction création des objets
-        this.initResto(places, service, status);
+        this.initResto(results);
       }
     });
   } // Fin fonction getResto
@@ -44,7 +43,7 @@ class Application {
   /*----------------------------------------------------------------------
   -----------|| Fonction initialisant les objets Restaurant ||------------
   ----------------------------------------------------------------------*/
-  initResto(places, service, status) {
+  initResto(places) {
     let mapClass = this.mapClass;
     this.arrayRestaurants = [];
     
@@ -69,12 +68,12 @@ class Application {
     });
 
     // Tableau de base des objets Restaurant
-    console.log(this.arrayRestaurants);
+    // console.log(this.arrayRestaurants);
 
     // Récupération des avis pour chaque objet resto
     for (let i = 0; i < this.arrayRestaurants.length; i++) {
       let item = this.arrayRestaurants[i];
-      item.getRatings(service, status);
+      item.getDetails(mapClass);
     }
 
     this.initDisplayResto(this.arrayRestaurants);
@@ -136,7 +135,7 @@ class Application {
   /*----------------------------------------------------------------------
   ---------------|| Affichage des restos (map et liste) ||----------------
   ----------------------------------------------------------------------*/
-  async initDisplayResto(arrayResto) {
+  initDisplayResto(arrayResto) {
     let mapClass = this.mapClass;
     $('#zoneListe ul li').remove();
     
@@ -184,11 +183,11 @@ class Application {
   /*----------------------------------------------------------------------
   -------------------|| Fonction de gestion du pop up ||------------------
   ----------------------------------------------------------------------*/
-  displayInfoPop(item) {
+  async displayInfoPop(item) {     
     // Apparition du popup
     $('#overlay').css('display', 'flex');
     $('#overlayBack').css('display', 'flex');
-
+    
     // Affichage des infos dans le popup
     $('h3').html(item.name);
     $('#photoResto').html('<img src="' + item.urlPhoto + '"alt="photo du restaurant">');
@@ -196,19 +195,23 @@ class Application {
     $('#noteMoyenne p').html('Note moyenne :  ' + item.average + ' / 5 <strong> ★</strong>');
     $('#titleAvis').html('Derniers avis sur ce restaurant (' + item.ratingsTotal + ' au total) :');
 
-    // Récupération des avis
-    item.ratings.forEach(element => {
-      let comment = element.text
+    // Affichage des avis
+    if(item.ratings === undefined) {
+      // cas du bug details
+      await item.getDetails(this.mapClass);
+      this.displayRatings(item);
+    } else {
+      this.displayRatings(item);
+    }
 
-      if (element.text === "") {
-        comment = " Aucun";
-      } else {
-        comment = element.text;
-      }
-
-      $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.rating + '/5' + '<i id="dots"> </i> </p>'
-        + '<p>' + 'Commentaire : ' + comment + '</p> <hr id="separateCom"> </div>');
-    });
+    // Ligne de contact
+    if(item.website == null) {
+      $('#infoContact p').html(item.phone);
+    } else if (item.website == null && item.phone == null) {
+      $('#infoContact').remove();
+    } else {
+      $('#infoContact p').html('<a href="'+ item.website +'"> Voir le site web </a> <strong> ~ </strong>' + item.phone);
+    }
 
     // Fermeture du popup
     $('#buttonClose , #overlayBack').click(() => {
@@ -218,6 +221,7 @@ class Application {
       $('#overlay').css('display', 'none');
       $('#overlayBack').css('display', 'none');
       $('.ratingItem').remove();
+      $('#infoContact p').html("");
       $('#formAvis').css('display', 'none');
 
       // Réinitialisation du bouton d'ajout de com
@@ -231,6 +235,22 @@ class Application {
     });
 
   } // Fin fonction DisplayInfoPop
+
+  // ---- Fonction affichage des avis (annexe de DisplayInfoPop) ----
+  displayRatings(item) {
+    item.ratings.forEach(element => {
+      let comment = element.text
+
+      if (element.text === "") {
+        comment = " Aucun";
+      } else {
+        comment = element.text;
+      }
+
+      $('#titleAvis').after('<div class="ratingItem"> <p> Note : ' + element.rating + '/5' + '<i id="dots"> </i> </p>'
+        + '<p>' + 'Commentaire : ' + comment + '</p> <hr id="separateCom"> </div>');
+    });
+  }
 
   /*----------------------------------------------------------------------
   ----------------------|| Fonction d'ajout d'avis ||---------------------
@@ -262,7 +282,7 @@ class Application {
         // Rafraichissement de l'affichage
         let totalReviews = item.ratingsTotal += 1;
         $('.ratingItem').remove();
-        $('#dots').addClass('fa fa-ellipsis-v');
+        // $('#dots').addClass('fa fa-ellipsis-v');
         // Maj du nb d'avis et de la note dans la liste
         $('.restoNote:eq(' + incrementNumber + ')').html(item.recalculAverage(noteEnter) + '/5 <strong> ★</strong>' + ' (' + totalReviews + ' avis)');
         this.displayInfoPop(item);

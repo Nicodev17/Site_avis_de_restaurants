@@ -400,7 +400,23 @@ h3 {
     color: #4b4b4b;
     margin-top: 20px;
     padding: 0 30px 0 30px;
-    
+}
+
+#infoContact {
+    text-align: center;
+    color: #4b4b4b;
+    margin-top: 20px;
+    padding: 0 30px 0 30px;
+}
+
+#infoContact a {
+    color: #e64f2a;
+}
+
+#infoContact strong {
+    font-size: 1.5em;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #noteMoyenne p {
@@ -868,6 +884,16 @@ margin-left: -55px;
 
     #adresseResto p {
         font-size: 0.9em;
+    }
+
+    #infoContact {
+        font-size: 0.9em;
+    }
+
+    #infoContact strong {
+        font-size: 1em;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
     #noteMoyenne p {

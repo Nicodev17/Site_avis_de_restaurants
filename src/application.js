@@ -52,7 +52,7 @@ class Application {
 
       // Récupération de la photo
       let urlPhoto;
-      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+      let apiKey = 'AIzaSyAhbKHFVYqCju57U2B3xIeiSnDoc05n7A4';
       let urlStreetView = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${element.geometry.location.lat()},${element.geometry.location.lng()}&fov=80&heading=70&pitch=0&key=${apiKey}`;
       
       // Si aucune photo = utilisation de la photo streetview
@@ -316,7 +316,7 @@ class Application {
     mapClass.map.addListener("rightclick", async (e) => {
       let latClick = e.latLng.lat();
       let longClick = e.latLng.lng();
-      let apiKey = 'AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k';
+      let apiKey = 'AIzaSyAhbKHFVYqCju57U2B3xIeiSnDoc05n7A4';
 
       // id du new resto suivant ceux existants
       let growId = this.arrayRestaurants.length;

@@ -17,7 +17,7 @@ class GoogleMap {
     async load(element) {
         return new Promise((resolve, reject) => {
             // Récupération de la map via l'api google maps
-            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOC9ObG1y6HwJN-04mYSZy90W4nQOVs3k&map_ids=455789ea7a0a6e59&libraries=places', () => {
+            $script('https://maps.googleapis.com/maps/api/js?key=AIzaSyAhbKHFVYqCju57U2B3xIeiSnDoc05n7A4&map_ids=a21c47956ac95939&libraries=places', () => {
                 
                 // Class et méthodes pour les marqueurs personnalisés
                 this.restoMarker = class RestoMarker extends google.maps.OverlayView {
@@ -88,7 +88,7 @@ class GoogleMap {
                 // Création du nouvel objet de la map stocké dans this.map
                 this.map = new google.maps.Map(element, {
                     zoom: 15,
-                    mapId: '455789ea7a0a6e59',
+                    mapId: 'a21c47956ac95939',
                     center: {lat: 48.859626, lng: 2.350331},
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
